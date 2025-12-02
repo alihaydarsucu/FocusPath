@@ -1,5 +1,0 @@
-module oop_project
-typeinfo appoop_project.qmltypes
-prefer :/qt/qml/oop_project/
-depends QtQuick
-
