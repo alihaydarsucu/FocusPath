@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LOG_PARSER_HPP
+#define LOG_PARSER_HPP
 
 #include <fstream>
 #include <iostream>
@@ -31,3 +32,5 @@ public:
     const std::vector<WindowEvent>& events() const;
 
 };
+
+#endif //LOG_PARSER_HPP 
