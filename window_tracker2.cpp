@@ -81,12 +81,12 @@ void WindowTracker::logWindow(Window w, long ms) {
     if (name) XFree(name);
 
     json entry = {
-        {(unsigned long) w}, //window id
-        {windowName}, //window name
-        {cls}, //window class
-        {ms}, // duration (ms)
-        {std::time(nullptr)} //timestamp (unix time)
+    {"window_id", static_cast<unsigned long>(w)},
+    {"window_class", cls},
+    {"duration_ms", ms},
+    {"ended_at", std::time(nullptr)}
     };
+
 
     out << entry.dump() << "\n";
     out.flush();
