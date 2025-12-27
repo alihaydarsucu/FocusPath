@@ -6,7 +6,7 @@ AppUsageAnalyzer::AppUsageAnalyzer(
 ) : usage_(usage),
     trackedApps_(trackedApps.begin(), trackedApps.end()) {}
 
-AppUsageAnalyzer::Result AppUsageAnalyzer::analyze() const {
+AppUsageAnalyzer::AppUsageResult AppUsageAnalyzer::analyze() const {
     long long listed = 0;
     long long unlisted = 0;
 

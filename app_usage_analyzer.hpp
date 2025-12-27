@@ -10,7 +10,7 @@ class AppUsageAnalyzer {
 public:
     using UsageMap = std::unordered_map<std::string, long long>;
 
-    struct Result {
+    struct AppUsageResult {
         long long listedTime;
         long long unlistedTime;
         double listedPercent;
@@ -22,7 +22,7 @@ public:
         const std::vector<std::string>& trackedApps
     );
 
-    Result analyze() const;
+    AppUsageResult analyze() const;
 
 private:
     const UsageMap& usage_;
