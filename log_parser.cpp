@@ -46,6 +46,7 @@ WindowUsageParser::parse_event(const json& j) const {
     return {
         j.at("window_id").get<unsigned long>(),
         j.at("window_class").get<std::string>(),
+        j.at("window_title").get<std::string>(),
         j.at("duration_ms").get<long long>(),
         j.at("ended_at").get<std::time_t>()
     };
@@ -54,6 +55,7 @@ WindowUsageParser::parse_event(const json& j) const {
 bool WindowUsageParser::is_valid(const json& j) const {
     return j.contains("window_id") &&
            j.contains("window_class") &&
+           j.contains("window_title") &&
            j.contains("duration_ms") &&
            j.contains("ended_at");
 }

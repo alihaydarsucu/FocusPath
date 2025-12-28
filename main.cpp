@@ -8,16 +8,16 @@
 int main() {
     // WINDOW TRACKER
 
-    /*WindowTracker tracker("window_log.json");
+    WindowTracker tracker("logs");
 
     while (true) {
         tracker.tick();
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    }*/
+    }
 
     // JSON PARSER
 
-    WindowUsageParser parser("window_log.json");
+    //WindowUsageParser parser("window_log.json");
 
     /*std::cout << "\nWriting total: \n";
 
@@ -33,8 +33,9 @@ int main() {
 
     // LISTED VS UNLISTED TIME SPENT
 
-    std::vector<std::string> trackedApps;
-    trackedApps.emplace_back("Alacritty");
+    //std::vector<std::string> trackedApps;
+    //trackedApps.emplace_back("Alacritty");
+    
     /*
     AppUsageAnalyzer analyzer(parser.totals_by_app(), trackedApps);
     AppUsageAnalyzer::AppUsageResult result = analyzer.analyze();
@@ -50,13 +51,13 @@ int main() {
     */
 
     // DISTRACTION VS FOCUSED WORK COUNTER
-    AttentionAnalyzer analyzer(parser.events(), trackedApps);
+    /*AttentionAnalyzer analyzer(parser.events(), trackedApps);
     AttentionAnalyzer::AttentionStats stats = analyzer.analyze();
 
     std::cout << "Distraction count: " << stats.distraction_count << "\n";
     std::cout << "Longest distraction: " << stats.longest_distraction_ms / 1000 << " s\n";
     std::cout << "Longest focus: " << stats.longest_focus__ms / 1000 << " s\n";
-    
+    */
 
 
     return 0;

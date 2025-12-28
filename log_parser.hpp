@@ -12,6 +12,7 @@
 struct WindowEvent {
     unsigned long window_id;
     std::string window_class;
+    std::string window_title;
     long long duration_ms;
     std::time_t ended_at;
 };

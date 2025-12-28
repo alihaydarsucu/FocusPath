@@ -12,18 +12,22 @@
 
 class WindowTracker {
     public:
-        WindowTracker(const std::string& path);
+        explicit WindowTracker(const std::string& logDir);
         ~WindowTracker();
         void tick();
     
     private:
         Window getActiveWindow();
-        void logWindow(Window w, long ms);
+        std::string getWindowTitle(Window w);
+        void logWindow(Window w, long ms, std::string title);
 
         Display* display;
         Window root;
         Atom atomActive;
+        Atom atomNetWmName;
+        Atom atomUtf8;
         Window current;
+        std::string current_title;
         std::chrono::steady_clock::time_point lastSwitch;
         std::ofstream out;
 };
