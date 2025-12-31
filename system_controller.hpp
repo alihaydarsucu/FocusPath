@@ -1,22 +1,25 @@
 #pragma once
+
 #include <QObject>
+#include <QString>
+#include <QTimer>
 #include <memory>
+
 #include "system_handler.hpp"
 
 class SystemController : public QObject {
     Q_OBJECT
+
 public:
     explicit SystemController(const QString& logDir, QObject* parent = nullptr);
-    ~SystemController();
+
+    bool isRunning() const;
 
 public slots:
     void start();
     void stop();
-    bool isRunning() const;
-
-signals:
-    void runningChanged(bool);
 
 private:
     std::unique_ptr<SystemHandler> handler;
+    QTimer* timer;
 };

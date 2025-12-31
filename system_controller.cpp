@@ -4,26 +4,22 @@ SystemController::SystemController(const QString& logDir, QObject* parent)
     : QObject(parent)
 {
     handler = std::make_unique<SystemHandler>(logDir.toStdString());
-}
 
-SystemController::~SystemController() {
-    handler->stop();
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [this]() {
+        handler->tick();
+    });
 }
 
 void SystemController::start() {
-    if (!handler->isRunning()) {
-        handler->start();
-        emit runningChanged(true);
-    }
+    timer->start(200);
 }
 
 void SystemController::stop() {
-    if (handler->isRunning()) {
-        handler->stop();
-        emit runningChanged(false);
-    }
+    timer->stop();
 }
 
 bool SystemController::isRunning() const {
-    return handler->isRunning();
+    return timer->isActive();
 }
+
