@@ -1,0 +1,10 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>pictures/suluboya1.PNG</file>
+        <file>pictures/icons8-play-48.png</file>
+        <file>pictures/history.png</file>
+        <file>pictures/lace.png</file>
+        <file>pictures/multimedia.png</file>
+    </qresource>
+</RCC>

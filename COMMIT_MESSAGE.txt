@@ -1,0 +1,10 @@
+Fix build system and implement workflow timer functionality
+
+- Fixed CMakeLists.txt to include missing source files for Qt6 builds
+- Created Qt Resource System (resources.qrc) for embedded images
+- Replaced hardcoded absolute paths with portable relative paths
+- Implemented countdown timer with automatic workflow completion
+- Added styled countdown display (HH:MM:SS) in workflow session
+- Fixed workflow saving to use application directory structure
+
+These changes make the app portable and add core timer functionality. Graphics and the UI is not finished yet.
