@@ -1,5 +1,6 @@
 #include "inputwindow.h"
 
+#include "clickablelabel.h"
 #include "dashboardpage.h"
 #include "workflowsetuppage.h"
 #include "historypage.h"
@@ -10,6 +11,7 @@
 #include <QFrame>
 #include <QWidget>
 #include <QPushButton>
+#include <QLabel>
 
 InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
@@ -170,8 +172,6 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     mainLayout->addWidget(topWidget);
     mainLayout->addWidget(line);
     mainLayout->addWidget(stack, 1);
-
-    resize(1200, 800);
 }
 
 void InputWindow::showDashboard()

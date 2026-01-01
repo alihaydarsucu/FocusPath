@@ -6,6 +6,14 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    // Pencere özelliklerini ayarla
+    setWindowTitle("FocusPath");
+    setMinimumSize(1000, 600);
+    resize(1200, 800);
+    
+    // Pencere bayraklarını kontrol et (maximize/minimize/close butonları)
+    setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
+
     stack = new QStackedWidget(this);
 
     input  = new InputWindow;

@@ -1,5 +1,5 @@
 #include "workflowsetuppage.h"
-#include "FocusCard.h"
+#include "emoji_selector.h"
 
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -20,364 +20,941 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QCoreApplication>
-
-
+#include <QCheckBox>
+#include <QSet>
 
 WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), selectedEmoji("🚀")
 {
-    selectedIcon = "🚀";
+    // Main layout
+    QVBoxLayout *rootLayout = new QVBoxLayout(this);
+    rootLayout->setContentsMargins(40, 40, 40, 40);
+    rootLayout->setSpacing(20);
 
-    QVBoxLayout *root = new QVBoxLayout(this);
-    root->setContentsMargins(120, 30, 120, 40);
-
-    appsSetup = new ClickableLabel();
-    durationSetup = new ClickableLabel();
-    startWorkflowButton = new QPushButton("Start Session");
-    backButton = new QPushButton("Back");
-
-    appsSetup->setText("Apps Setup");
-    durationSetup->setText("Duration Setup");
-
-
-
-
+    // Create main card frame
     QFrame *mainCard = new QFrame(this);
-
-    root->addWidget(mainCard);
-    root->addWidget(appsSetup);
-    root->addWidget(durationSetup);
-
-
     mainCard->setStyleSheet(
-        "QFrame { background:#ffffff; border-radius:24px; border:1px solid #eee; }"
-        );
-
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
-    shadow->setBlurRadius(30);
-    shadow->setYOffset(10);
-    shadow->setColor(QColor(0, 0, 0, 30));
-    mainCard->setGraphicsEffect(shadow);
-
-    QVBoxLayout *cardLayout = new QVBoxLayout(mainCard);
-    cardLayout->setContentsMargins(30, 30, 30, 30);
-    cardLayout->setSpacing(20);
-
-
-
-
-
-    stacked = new QStackedWidget(mainCard);
-    cardLayout->addWidget(stacked);
-
-
-
-    QWidget *pageOne = new QWidget;
-    QHBoxLayout *pageOneLayout = new QHBoxLayout(pageOne);
-    pageOneLayout->setSpacing(20);
-
-    QLabel *title = new QLabel("Allowed Applications");
-    title->setStyleSheet("font-size:28px; font-weight:300;");
-    pageOneLayout->addWidget(title);
-
-    allAppsList = new QListWidget;
-    selectedList = new QListWidget;
-
-    allAppsList->setIconSize(QSize(24, 24));
-    selectedList->setIconSize(QSize(24, 24));
-
-    allAppsList->setStyleSheet(
-        "QListWidget { border:1px solid #ddd; border-radius:12px; padding:6px; }"
-        );
-    selectedList->setStyleSheet(
-        "QListWidget { border:1px solid #ddd; border-radius:12px; padding:6px; }"
-        );
-
-    pageOneLayout->addWidget(allAppsList);
-    pageOneLayout->addWidget(selectedList);
-
-    stacked->addWidget(pageOne);
-
-
-
-    QWidget *pageTwo = new QWidget;
-    QVBoxLayout *pageTwoLayout = new QVBoxLayout(pageTwo);
-
-    pageTwo->setStyleSheet("background-color: #FFFFFF;");
-    QHBoxLayout *headerLayout = new QHBoxLayout();
-    QLabel *titleLabel = new QLabel("Session Duration");
-
-
-    timeLabel = new QLabel("0m");
-    QFont font = timeLabel->font();
-    font.setPointSize(16);
-    font.setBold(true);
-    timeLabel->setFont(font);
-
-    headerLayout->addWidget(titleLabel);
-    headerLayout->addStretch();
-    headerLayout->addWidget(timeLabel);
-
-    slider = new QSlider(Qt::Horizontal);
-    slider->setRange(0, 180);
-    slider->setValue(45);
-
-    QHBoxLayout *sliderInfoLayout = new QHBoxLayout();
-    sliderInfoLayout->addWidget(new QLabel("0m"));
-    sliderInfoLayout->addStretch();
-    sliderInfoLayout->addWidget(new QLabel("3h"));
-
-    QVBoxLayout *sliderContainer = new QVBoxLayout();
-    sliderContainer->addWidget(slider);
-    sliderContainer->addLayout(sliderInfoLayout);
-
-
-    QHBoxLayout *buttonsLayout = new QHBoxLayout();
-
-
-    QPushButton *btnShort = new QPushButton("Short (30m)");
-    QPushButton *btnFocus = new QPushButton("Focus (1h 15m)");
-    QPushButton *btnLong  = new QPushButton("Deep (2h)");
-
-    buttonsLayout->addWidget(btnShort);
-    buttonsLayout->addWidget(btnFocus);
-    buttonsLayout->addWidget(btnLong);
-
-    QFrame *line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFixedHeight(1);
-    line->setStyleSheet("background:#F8F9FA;");
-
-    QLabel *titleTemplate = new QLabel("Save as Template");
-    titleTemplate->setStyleSheet("font-size:16px; font-weight:600;");
-    templateName = new QLineEdit();
-    templateName->setPlaceholderText("Give a name your template..");
-    templateName->setStyleSheet(
-        "QLineEdit { border:1px solid #ddd; border-radius:10px; padding:10px; font-size:14px; }"
+        "QFrame { "
+        "background:#ffffff; "
+        "border-radius:20px; "
+        "border:1px solid #e0e0e0; "
+        "}"
     );
 
-    // Icon selection row
-    setupIconDisplay();
+    // Add drop shadow effect
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
+    shadow->setBlurRadius(20);
+    shadow->setYOffset(8);
+    shadow->setXOffset(0);
+    shadow->setColor(QColor(0, 0, 0, 20));
+    mainCard->setGraphicsEffect(shadow);
 
-    QLabel *iconHint = new QLabel("Pick an icon for this template");
-    iconHint->setStyleSheet("font-size:13px; color:#6C757D;");
+    // Setup stacked widget inside card
+    QVBoxLayout *cardLayout = new QVBoxLayout(mainCard);
+    cardLayout->setContentsMargins(0, 0, 0, 0);
+    cardLayout->setSpacing(0);
 
-    QGridLayout *iconButtonsLayout = new QGridLayout();
-    iconButtonsLayout->setHorizontalSpacing(8);
-    iconButtonsLayout->setVerticalSpacing(8);
-    QStringList emojiList {
-        "🔥","🎨","✉️","📚","🧘","🚀","💡","🎯","💻","🎵","🍃","☕","📖","🧪","🧩","🎬","🌙","🏃"
-    };
-    int colCount = 6;
-    int idx = 0;
-    for (const QString &emoji : emojiList) {
-        int r = idx / colCount;
-        int c = idx % colCount;
-        QPushButton *btn = new QPushButton(emoji);
-        btn->setCheckable(true);
-        btn->setStyleSheet(
-            "QPushButton { background:#F7F7F7; border:1px solid #E0E0E0; border-radius:10px; padding:8px 12px; font-size:16px; }"
-            "QPushButton:checked { background:#0078D4; color:white; border-color:#0078D4; }"
-        );
-        if (emoji == QString::fromStdString(selectedIcon)) {
-            btn->setChecked(true);
-        }
-        connect(btn, &QPushButton::clicked, this, [this, btn, emoji, iconButtonsLayout]() {
-            for (int i = 0; i < iconButtonsLayout->count(); ++i) {
-                auto otherBtn = qobject_cast<QPushButton*>(iconButtonsLayout->itemAt(i)->widget());
-                if (otherBtn && otherBtn != btn) {
-                    otherBtn->setChecked(false);
-                }
-            }
-            selectedIcon = emoji.toStdString();
-            updateIconDisplay();
-        });
-        iconButtonsLayout->addWidget(btn, r, c);
-        idx++;
-    }
+    // Create tab navigation at the top
+    QFrame *tabFrame = new QFrame();
+    tabFrame->setStyleSheet(
+        "QFrame { "
+        "background:#ffffff; "
+        "border-bottom:1px solid #e5e7eb; "
+        "border-radius:20px 20px 0px 0px; "
+        "}"
+    );
+    QHBoxLayout *tabLayout = new QHBoxLayout(tabFrame);
+    tabLayout->setContentsMargins(40, 0, 40, 0);
+    tabLayout->setSpacing(0);
 
+    QPushButton *appSetupTab = new QPushButton("App Setup");
+    appSetupTab->setFixedHeight(50);
+    appSetupTab->setStyleSheet(
+        "QPushButton { "
+        "background:transparent; "
+        "border:none; "
+        "border-bottom:3px solid #0078d4; "
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#0078d4; "
+        "padding:0px 20px; "
+        "}"
+        "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+    );
+    appSetupTab->setFlat(true);
 
-    pageTwoLayout->addLayout(headerLayout);
-    pageTwoLayout->addSpacing(15);
-    pageTwoLayout->addLayout(sliderContainer);
-    pageTwoLayout->addSpacing(15);
-    pageTwoLayout->addWidget(new QLabel("Quick Presets"));
-    pageTwoLayout->addLayout(buttonsLayout);
-    pageTwoLayout->addStretch();
-    pageTwoLayout->addWidget(line);
-    pageTwoLayout->addSpacing(15);
-    pageTwoLayout->addWidget(titleTemplate);
-    pageTwoLayout->addWidget(templateName);
-    pageTwoLayout->addSpacing(8);
-    pageTwoLayout->addWidget(iconHint);
-    QHBoxLayout *iconRow = new QHBoxLayout();
-    iconRow->addWidget(iconDisplayFrame);
-    iconRow->addLayout(iconButtonsLayout);
-    iconRow->addStretch();
-    pageTwoLayout->addLayout(iconRow);
+    QPushButton *durationSetupTab = new QPushButton("Duration Setup");
+    durationSetupTab->setFixedHeight(50);
+    durationSetupTab->setStyleSheet(
+        "QPushButton { "
+        "background:transparent; "
+        "border:none; "
+        "border-bottom:3px solid transparent; "
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#9ca3af; "
+        "padding:0px 20px; "
+        "}"
+        "QPushButton:hover { color:#6b7280; }"
+    );
+    durationSetupTab->setFlat(true);
 
+    tabLayout->addWidget(appSetupTab);
+    tabLayout->addWidget(durationSetupTab);
+    tabLayout->addStretch();
 
+    cardLayout->addWidget(tabFrame);
 
+    stacked = new QStackedWidget();
+    QVBoxLayout *stackedLayout = new QVBoxLayout();
+    stackedLayout->setContentsMargins(40, 40, 40, 40);
+    stackedLayout->setSpacing(0);
+    
+    QWidget *stackedContainer = new QWidget();
+    stackedContainer->setLayout(stackedLayout);
+    stackedLayout->addWidget(stacked);
+    
+    cardLayout->addWidget(stackedContainer, 1);
 
-    connect(slider, &QSlider::valueChanged, this, &WorkflowSetupPage::updateLabel);
-
-
-    connect(btnShort, &QPushButton::clicked, [=](){ slider->setValue(30); });
-    connect(btnFocus, &QPushButton::clicked, [=](){ slider->setValue(75); });
-    connect(btnLong,  &QPushButton::clicked, [=](){ slider->setValue(120); });
-
-
-    updateLabel(slider->value());
-
-
-    stacked->addWidget(pageTwo);
-
+    // Setup both pages
+    setupAppSetupPage();
+    setupDurationSetupPage();
 
     stacked->setCurrentIndex(0);
 
-
-
-    loadLinuxApps();
-
-
-
-    connect(allAppsList, &QListWidget::itemClicked, this,
-            [this](QListWidgetItem *item) {
-
-                for (int i = 0; i < selectedList->count(); ++i)
-                    if (selectedList->item(i)->text() == item->text())
-                        return;
-
-                selectedList->addItem(
-                    new QListWidgetItem(item->icon(), item->text())
-                    );
-            });
-
-    connect(selectedList, &QListWidget::itemClicked,
-            this, [this](QListWidgetItem *item) {
-                delete selectedList->takeItem(selectedList->row(item));
-            });
-
-
-    connect(appsSetup, &ClickableLabel::clicked, this, [=]() {
+    // Tab switching
+    connect(appSetupTab, &QPushButton::clicked, this, [this, appSetupTab, durationSetupTab]() {
         stacked->setCurrentIndex(0);
+        appSetupTab->setStyleSheet(
+            "QPushButton { "
+            "background:transparent; "
+            "border:none; "
+            "border-bottom:3px solid #0078d4; "
+            "font-size:14px; "
+            "font-weight:600; "
+            "color:#0078d4; "
+            "padding:0px 20px; "
+            "}"
+            "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+        );
+        durationSetupTab->setStyleSheet(
+            "QPushButton { "
+            "background:transparent; "
+            "border:none; "
+            "border-bottom:3px solid transparent; "
+            "font-size:14px; "
+            "font-weight:600; "
+            "color:#9ca3af; "
+            "padding:0px 20px; "
+            "}"
+            "QPushButton:hover { color:#6b7280; }"
+        );
     });
 
-    connect(durationSetup, &ClickableLabel::clicked, this, [=]() {
+    connect(durationSetupTab, &QPushButton::clicked, this, [this, appSetupTab, durationSetupTab]() {
         stacked->setCurrentIndex(1);
+        appSetupTab->setStyleSheet(
+            "QPushButton { "
+            "background:transparent; "
+            "border:none; "
+            "border-bottom:3px solid transparent; "
+            "font-size:14px; "
+            "font-weight:600; "
+            "color:#9ca3af; "
+            "padding:0px 20px; "
+            "}"
+            "QPushButton:hover { color:#6b7280; }"
+        );
+        durationSetupTab->setStyleSheet(
+            "QPushButton { "
+            "background:transparent; "
+            "border:none; "
+            "border-bottom:3px solid #0078d4; "
+            "font-size:14px; "
+            "font-weight:600; "
+            "color:#0078d4; "
+            "padding:0px 20px; "
+            "}"
+            "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+        );
     });
 
-    QHBoxLayout *actionRow = new QHBoxLayout();
-    actionRow->addWidget(backButton);
-    actionRow->addStretch();
-    actionRow->addWidget(startWorkflowButton);
+    rootLayout->addWidget(mainCard, 1);
 
+    // Bottom buttons layout
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->setSpacing(12);
+
+    QPushButton *backButton = new QPushButton("Back");
+    backButton->setFixedHeight(44);
+    backButton->setMinimumWidth(100);
     backButton->setStyleSheet(
-        "QPushButton { background:#F2F4F5; border:1px solid #E0E0E0; border-radius:10px; padding:10px 16px; font-weight:600; }"
-        "QPushButton:hover { background:#e9ecef; }"
+        "QPushButton { "
+        "background:#f2f4f5; "
+        "border:1px solid #e0e0e0; "
+        "border-radius:8px; "
+        "padding:10px 24px; "
+        "font-weight:600; "
+        "font-size:14px; "
+        "color:#333333; "
+        "}"
+        "QPushButton:hover { background:#e8ecef; }"
     );
-    startWorkflowButton->setStyleSheet(
-        "QPushButton { background:#0078D4; color:white; border:none; border-radius:10px; padding:10px 18px; font-weight:700; }"
-        "QPushButton:hover { background:#005A9E; }"
-    );
-
-    connect(startWorkflowButton, &QPushButton::clicked, this, &WorkflowSetupPage::onStartWorkflowClicked);
     connect(backButton, &QPushButton::clicked, this, &WorkflowSetupPage::onBackClicked);
 
-    root->addSpacing(12);
-    root->addLayout(actionRow);
+    buttonLayout->addWidget(backButton);
+    buttonLayout->addStretch();
+
+    QPushButton *actionButton = new QPushButton("Next →");
+    actionButton->setFixedHeight(44);
+    actionButton->setMinimumWidth(140);
+    
+    // Style variable for next/start buttons (will change based on page)
+    auto nextButtonStyle = "QPushButton { "
+        "background:#0078d4; "
+        "color:white; "
+        "border:none; "
+        "border-radius:8px; "
+        "padding:10px 24px; "
+        "font-weight:700; "
+        "font-size:14px; "
+        "}"
+        "QPushButton:hover { background:#005a9e; }";
+    
+    auto startButtonStyle = "QPushButton { "
+        "background:#8B4513; "
+        "color:white; "
+        "border:none; "
+        "border-radius:8px; "
+        "padding:10px 24px; "
+        "font-weight:700; "
+        "font-size:14px; "
+        "}"
+        "QPushButton:hover { background:#6B3410; }";
+    
+    actionButton->setStyleSheet(nextButtonStyle);
+    
+    // Update button text and function based on current page
+    connect(appSetupTab, &QPushButton::clicked, this, [actionButton, nextButtonStyle]() {
+        actionButton->setText("Next →");
+        actionButton->setStyleSheet(nextButtonStyle);
+    });
+    
+    connect(durationSetupTab, &QPushButton::clicked, this, [actionButton, startButtonStyle]() {
+        actionButton->setText("Start Tracking");
+        actionButton->setStyleSheet(startButtonStyle);
+    });
+    
+    connect(actionButton, &QPushButton::clicked, this, [this, actionButton, durationSetupTab]() {
+        if (actionButton->text() == "Next →") {
+            // Go to Duration Setup and click the tab to update everything
+            stacked->setCurrentIndex(1);
+            durationSetupTab->click();  // This will trigger tab styling and button text update
+        } else if (actionButton->text() == "Start Tracking") {
+            // Start the workflow
+            onStartWorkflowClicked();
+        }
+    });
+
+    buttonLayout->addWidget(actionButton);
+    rootLayout->addLayout(buttonLayout);
+
+    // Load Linux apps
+    loadLinuxApps();
 }
 
+void WorkflowSetupPage::setupAppSetupPage()
+{
+    QWidget *appPage = new QWidget();
+    QVBoxLayout *pageLayout = new QVBoxLayout(appPage);
+    pageLayout->setContentsMargins(0, 0, 0, 0);
+    pageLayout->setSpacing(20);
 
+    // Title
+    QLabel *titleLabel = new QLabel("App Setup");
+    titleLabel->setStyleSheet(
+        "font-size:24px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    pageLayout->addWidget(titleLabel);
+
+    QLabel *subtitleLabel = new QLabel("Select allowed applications for your focused session.\nSearch and whitelist the apps that you want to stay focused on.");
+    subtitleLabel->setStyleSheet(
+        "font-size:13px; "
+        "color:#6b7280; "
+        "line-height:1.5; "
+    );
+    subtitleLabel->setWordWrap(true);
+    pageLayout->addWidget(subtitleLabel);
+
+    // Search input
+    appSearchInput = new QLineEdit();
+    appSearchInput->setPlaceholderText("Search apps to whitelist...");
+    appSearchInput->setFixedHeight(44);
+    appSearchInput->setStyleSheet(
+        "QLineEdit { "
+        "background:#ffffff; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "padding:10px 14px; "
+        "font-size:14px; "
+        "color:#1f2937; "
+        "}"
+        "QLineEdit:focus { "
+        "border:1px solid #0078d4; "
+        "background:#ffffff; "
+        "}"
+    );
+    connect(appSearchInput, &QLineEdit::textChanged, this, &WorkflowSetupPage::filterApps);
+    pageLayout->addWidget(appSearchInput);
+
+    // Two-column layout for suggestions and selected apps
+    QHBoxLayout *appsContentLayout = new QHBoxLayout();
+    appsContentLayout->setSpacing(20);
+
+    // Left side: Suggestions
+    QVBoxLayout *suggestionsContainer = new QVBoxLayout();
+    suggestionsContainer->setContentsMargins(0, 0, 0, 0);
+    suggestionsContainer->setSpacing(12);
+
+    QLabel *suggestionsLabel = new QLabel("Suggestions");
+    suggestionsLabel->setStyleSheet(
+        "font-size:12px; "
+        "font-weight:600; "
+        "color:#9ca3af; "
+        "text-transform:uppercase; "
+        "letter-spacing:0.5px; "
+    );
+    suggestionsContainer->addWidget(suggestionsLabel);
+
+    // Suggestions list widget
+    suggestionsListWidget = new QListWidget();
+    suggestionsListWidget->setStyleSheet(
+        "QListWidget { "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "background:#ffffff; "
+        "padding:0px; "
+        "}"
+        "QListWidget::item { "
+        "padding:12px 12px; "
+        "border-bottom:1px solid #f3f4f6; "
+        "}"
+        "QListWidget::item:last { "
+        "border-bottom:none; "
+        "}"
+    );
+    suggestionsListWidget->setMinimumHeight(250);
+    suggestionsContainer->addWidget(suggestionsListWidget, 1);
+
+    // Right side: Selected Apps
+    QVBoxLayout *selectedContainer = new QVBoxLayout();
+    selectedContainer->setContentsMargins(0, 0, 0, 0);
+    selectedContainer->setSpacing(12);
+
+    QLabel *selectedLabel = new QLabel("Selected Apps");
+    selectedLabel->setStyleSheet(
+        "font-size:12px; "
+        "font-weight:600; "
+        "color:#9ca3af; "
+        "text-transform:uppercase; "
+        "letter-spacing:0.5px; "
+    );
+    selectedContainer->addWidget(selectedLabel);
+
+    selectedAppsListWidget = new QListWidget();
+    selectedAppsListWidget->setStyleSheet(
+        "QListWidget { "
+        "border:2px solid #e5e7eb; "
+        "border-radius:8px; "
+        "background:#f9fafb; "
+        "padding:0px; "
+        "}"
+        "QListWidget::item { "
+        "padding:12px 12px; "
+        "border-bottom:1px solid #f3f4f6; "
+        "}"
+        "QListWidget::item:last { "
+        "border-bottom:none; "
+        "}"
+    );
+    selectedAppsListWidget->setMinimumHeight(250);
+    selectedContainer->addWidget(selectedAppsListWidget, 1);
+
+    appsContentLayout->addLayout(suggestionsContainer, 1);
+    appsContentLayout->addLayout(selectedContainer, 1);
+    pageLayout->addLayout(appsContentLayout, 1);
+
+    // Footer info
+    QLabel *infoLabel = new QLabel("💡 FocusPath will monitor your active window. Time spent outside the selected applications will be recorded as distraction time.");
+    infoLabel->setStyleSheet(
+        "font-size:12px; "
+        "color:#6b7280; "
+        "background:#f9fafb; "
+        "border-left:3px solid #0078d4; "
+        "padding:12px; "
+        "border-radius:4px; "
+    );
+    infoLabel->setWordWrap(true);
+    pageLayout->addWidget(infoLabel);
+
+    // System status
+    QHBoxLayout *statusLayout = new QHBoxLayout();
+    QLabel *statusDot = new QLabel("●");
+    statusDot->setStyleSheet("color:#10b981; font-size:16px;");
+    QLabel *statusLabel = new QLabel("System Ready");
+    statusLabel->setStyleSheet("color:#6b7280; font-size:12px;");
+    QLabel *versionLabel = new QLabel("v2.4.0");
+    versionLabel->setStyleSheet("color:#9ca3af; font-size:12px;");
+    
+    statusLayout->addWidget(statusDot);
+    statusLayout->addWidget(statusLabel);
+    statusLayout->addStretch();
+    statusLayout->addWidget(versionLabel);
+    pageLayout->addLayout(statusLayout);
+
+    stacked->addWidget(appPage);
+}
+
+void WorkflowSetupPage::setupDurationSetupPage()
+{
+    QWidget *durationPage = new QWidget();
+    QVBoxLayout *pageLayout = new QVBoxLayout(durationPage);
+    pageLayout->setContentsMargins(0, 0, 0, 0);
+    pageLayout->setSpacing(24);
+
+    // Title section
+    QHBoxLayout *titleLayout = new QHBoxLayout();
+    QLabel *titleLabel = new QLabel("Duration Setup");
+    titleLabel->setStyleSheet(
+        "font-size:24px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    titleLayout->addWidget(titleLabel);
+    titleLayout->addStretch();
+
+    timeLabel = new QLabel("45 min");
+    timeLabel->setStyleSheet(
+        "font-size:20px; "
+        "font-weight:700; "
+        "color:#0078d4; "
+    );
+    titleLayout->addWidget(timeLabel);
+    pageLayout->addLayout(titleLayout);
+
+    QLabel *subtitleLabel = new QLabel("Set your session duration and give a name to your workflow for any starting next time.\nOptionally save the setup as a template.");
+    subtitleLabel->setStyleSheet(
+        "font-size:13px; "
+        "color:#6b7280; "
+        "line-height:1.5; "
+    );
+    subtitleLabel->setWordWrap(true);
+    pageLayout->addWidget(subtitleLabel);
+
+    // Session Duration section
+    QLabel *durationLabel = new QLabel("Session Duration");
+    durationLabel->setStyleSheet(
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    pageLayout->addWidget(durationLabel);
+
+    // Slider
+    durationSlider = new QSlider(Qt::Horizontal);
+    durationSlider->setRange(5, 180);
+    durationSlider->setValue(45);
+    durationSlider->setFixedHeight(6);
+    durationSlider->setStyleSheet(
+        "QSlider::groove:horizontal { "
+        "border:none; "
+        "height:6px; "
+        "background:#e5e7eb; "
+        "border-radius:3px; "
+        "}"
+        "QSlider::handle:horizontal { "
+        "background:#0078d4; "
+        "width:20px; "
+        "margin:-7px 0; "
+        "border-radius:10px; "
+        "}"
+        "QSlider::handle:horizontal:hover { "
+        "background:#005a9e; "
+        "}"
+    );
+    connect(durationSlider, &QSlider::valueChanged, this, &WorkflowSetupPage::updateDurationLabel);
+    pageLayout->addWidget(durationSlider);
+
+    // Slider range labels
+    QHBoxLayout *sliderRangeLayout = new QHBoxLayout();
+    QLabel *minLabel = new QLabel("5m");
+    minLabel->setStyleSheet("font-size:12px; color:#9ca3af;");
+    QLabel *maxLabel = new QLabel("3h");
+    maxLabel->setStyleSheet("font-size:12px; color:#9ca3af;");
+    sliderRangeLayout->addWidget(minLabel);
+    sliderRangeLayout->addStretch();
+    sliderRangeLayout->addWidget(maxLabel);
+    pageLayout->addLayout(sliderRangeLayout);
+
+    // Quick presets
+    QLabel *presetsLabel = new QLabel("Quick Presets");
+    presetsLabel->setStyleSheet(
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    pageLayout->addSpacing(8);
+    pageLayout->addWidget(presetsLabel);
+
+    QHBoxLayout *presetsLayout = new QHBoxLayout();
+    presetsLayout->setSpacing(12);
+
+    QPushButton *preset1 = new QPushButton("Pomodoro (25m)");
+    preset1->setFixedHeight(40);
+    preset1->setStyleSheet(
+        "QPushButton { "
+        "background:#f3f4f6; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "font-weight:600; "
+        "font-size:13px; "
+        "}"
+        "QPushButton:hover { background:#e5e7eb; }"
+    );
+    connect(preset1, &QPushButton::clicked, [this]() { durationSlider->setValue(25); });
+    presetsLayout->addWidget(preset1);
+
+    QPushButton *preset2 = new QPushButton("Deep Work (45m)");
+    preset2->setFixedHeight(40);
+    preset2->setStyleSheet(
+        "QPushButton { "
+        "background:#f3f4f6; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "font-weight:600; "
+        "font-size:13px; "
+        "}"
+        "QPushButton:hover { background:#e5e7eb; }"
+    );
+    connect(preset2, &QPushButton::clicked, [this]() { durationSlider->setValue(45); });
+    presetsLayout->addWidget(preset2);
+
+    QPushButton *preset3 = new QPushButton("Long Session (60m)");
+    preset3->setFixedHeight(40);
+    preset3->setStyleSheet(
+        "QPushButton { "
+        "background:#f3f4f6; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "font-weight:600; "
+        "font-size:13px; "
+        "}"
+        "QPushButton:hover { background:#e5e7eb; }"
+    );
+    connect(preset3, &QPushButton::clicked, [this]() { durationSlider->setValue(60); });
+    presetsLayout->addWidget(preset3);
+    presetsLayout->addStretch();
+
+    pageLayout->addLayout(presetsLayout);
+
+    // Workflow name section
+    QLabel *nameLabel = new QLabel("Workflow Name");
+    nameLabel->setStyleSheet(
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    pageLayout->addSpacing(12);
+    pageLayout->addWidget(nameLabel);
+
+    workflowNameInput = new QLineEdit();
+    workflowNameInput->setPlaceholderText("e.g. Morning Coding Session");
+    workflowNameInput->setFixedHeight(40);
+    workflowNameInput->setStyleSheet(
+        "QLineEdit { "
+        "background:#ffffff; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "padding:10px 12px; "
+        "font-size:14px; "
+        "color:#1f2937; "
+        "}"
+        "QLineEdit:focus { "
+        "border:1px solid #0078d4; "
+        "background:#ffffff; "
+        "}"
+    );
+    pageLayout->addWidget(workflowNameInput);
+
+    // Save as template
+    QCheckBox *templateCheckbox = new QCheckBox("Save as Template");
+    templateCheckbox->setStyleSheet(
+        "QCheckBox { "
+        "font-size:14px; "
+        "color:#1f2937; "
+        "}"
+        "QCheckBox::indicator { "
+        "width:18px; "
+        "height:18px; "
+        "}"
+    );
+    pageLayout->addWidget(templateCheckbox);
+
+    // Emoji selector section
+    QLabel *emojiLabel = new QLabel("Workflow Icon");
+    emojiLabel->setStyleSheet(
+        "font-size:14px; "
+        "font-weight:600; "
+        "color:#1f2937; "
+    );
+    pageLayout->addSpacing(12);
+    pageLayout->addWidget(emojiLabel);
+
+    QLabel *emojiSubLabel = new QLabel("Pick an emoji icon for this workflow");
+    emojiSubLabel->setStyleSheet(
+        "font-size:13px; "
+        "color:#6b7280; "
+    );
+    pageLayout->addWidget(emojiSubLabel);
+
+    QHBoxLayout *emojiLayout = new QHBoxLayout();
+    emojiLayout->setSpacing(12);
+
+    // Selected emoji display
+    selectedEmojiLabel = new QLabel(selectedEmoji);
+    selectedEmojiLabel->setFixedSize(50, 50);
+    selectedEmojiLabel->setAlignment(Qt::AlignCenter);
+    
+    // Set emoji font
+    QFont emojiFont;
+    emojiFont.setFamilies({"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Sans Serif"});
+    emojiFont.setPointSize(28);
+    selectedEmojiLabel->setFont(emojiFont);
+    
+    selectedEmojiLabel->setStyleSheet(
+        "QLabel { "
+        "background:#f3f4f6; "
+        "border-radius:8px; "
+        "border:1px solid #e5e7eb; "
+        "}"
+    );
+    emojiLayout->addWidget(selectedEmojiLabel);
+
+    // Emoji selector button
+    QPushButton *emojiButton = new QPushButton("Choose Emoji");
+    emojiButton->setFixedHeight(40);
+    emojiButton->setMinimumWidth(120);
+    emojiButton->setStyleSheet(
+        "QPushButton { "
+        "background:#f3f4f6; "
+        "border:1px solid #e5e7eb; "
+        "border-radius:8px; "
+        "font-weight:600; "
+        "font-size:13px; "
+        "color:#1f2937; "
+        "}"
+        "QPushButton:hover { background:#e5e7eb; }"
+    );
+    connect(emojiButton, &QPushButton::clicked, this, &WorkflowSetupPage::onEmojiButtonClicked);
+    emojiLayout->addWidget(emojiButton);
+    emojiLayout->addStretch();
+
+    pageLayout->addLayout(emojiLayout);
+
+    pageLayout->addStretch();
+
+    // System status
+    QHBoxLayout *statusLayout = new QHBoxLayout();
+    QLabel *statusDot = new QLabel("●");
+    statusDot->setStyleSheet("color:#10b981; font-size:16px;");
+    QLabel *statusLabel = new QLabel("System Ready");
+    statusLabel->setStyleSheet("color:#6b7280; font-size:12px;");
+    QLabel *versionLabel = new QLabel("v2.4.0");
+    versionLabel->setStyleSheet("color:#9ca3af; font-size:12px;");
+    
+    statusLayout->addWidget(statusDot);
+    statusLayout->addWidget(statusLabel);
+    statusLayout->addStretch();
+    statusLayout->addWidget(versionLabel);
+    pageLayout->addLayout(statusLayout);
+
+    stacked->addWidget(durationPage);
+}
 
 void WorkflowSetupPage::loadLinuxApps()
 {
-    allAppsList->clear();
+    appIconMap.clear();
 
+    // Tüm olası uygulama dizinleri (standart + Snap + AppImage)
     QStringList dirs = {
+        // Standart Linux dizinleri
         "/usr/share/applications",
         "/usr/local/share/applications",
-        QDir::homePath() + "/.local/share/applications"
+        QDir::homePath() + "/.local/share/applications",
+        
+        // Snap uygulamaları için dizinler
+        "/var/lib/snapd/desktop/applications",      // En önemli - Snap uygulamaları buraya kaydedilir
+        "/usr/share/snap/applications",
+        
+        // Flatpak uygulamaları için dizin (eğer varsa)
+        QDir::homePath() + "/.local/share/flatpak/export/share/applications",
+        "/var/lib/flatpak/exports/share/applications"
     };
+
+    QSet<QString> seenApps;  // Duplikat uygulamaları önlemek için
 
     for (const QString &dirPath : dirs) {
         QDir dir(dirPath);
         if (!dir.exists()) continue;
 
-        for (const QString &file :
-             dir.entryList(QStringList() << "*.desktop", QDir::Files)) {
+        for (const QString &file : dir.entryList(QStringList() << "*.desktop", QDir::Files)) {
+            QSettings settings(dir.absoluteFilePath(file), QSettings::IniFormat);
+            settings.beginGroup("Desktop Entry");
 
-            QSettings f(dir.absoluteFilePath(file), QSettings::IniFormat);
-            f.beginGroup("Desktop Entry");
-
-            if (f.value("Type") != "Application")
+            if (settings.value("Type") != "Application")
                 continue;
 
-            QString name = f.value("Name").toString();
-            QString iconName = f.value("Icon").toString();
+            QString name = settings.value("Name").toString();
+            QString iconName = settings.value("Icon").toString();
             if (name.isEmpty())
                 continue;
 
-            QIcon icon = QFile::exists(iconName)
-                             ? QIcon(iconName)
-                             : QIcon::fromTheme(iconName);
+            // Aynı uygulamayı iki kez eklememeyi kontrol et
+            if (seenApps.contains(name))
+                continue;
 
-            allAppsList->addItem(new QListWidgetItem(icon, name));
+            seenApps.insert(name);
+            appIconMap[name] = iconName;
         }
     }
+
+    // Uygulamaları alfabetik sıraya göre sırala
+    QMap<QString, QString> sortedMap;
+    for (auto it = appIconMap.begin(); it != appIconMap.end(); ++it) {
+        sortedMap.insert(it.key(), it.value());
+    }
+    appIconMap = sortedMap;
+
+    // Populate suggestions widget with all apps
+    filterApps("");
 }
-void WorkflowSetupPage::updateLabel(int totalMinutes) {
+
+void WorkflowSetupPage::filterApps(const QString &searchText)
+{
+    suggestionsListWidget->clear();
+
+    for (auto it = appIconMap.begin(); it != appIconMap.end(); ++it) {
+        const QString &appName = it.key();
+        const QString &iconName = it.value();
+
+        if (!searchText.isEmpty() && !appName.toLower().contains(searchText.toLower())) {
+            continue;
+        }
+
+        // Create item widget
+        QWidget *itemWidget = new QWidget();
+        QHBoxLayout *itemLayout = new QHBoxLayout(itemWidget);
+        itemLayout->setContentsMargins(0, 0, 0, 0);
+        itemLayout->setSpacing(12);
+
+        // App icon
+        QIcon appIcon = QFile::exists(iconName)
+                            ? QIcon(iconName)
+                            : QIcon::fromTheme(iconName);
+        
+        QLabel *iconLabel = new QLabel();
+        iconLabel->setPixmap(appIcon.pixmap(24, 24));
+        iconLabel->setFixedSize(24, 24);
+        itemLayout->addWidget(iconLabel);
+
+        // App name
+        QLabel *nameLabel = new QLabel(appName);
+        nameLabel->setStyleSheet(
+            "font-size:13px; "
+            "color:#1f2937; "
+            "font-weight:500; "
+        );
+        itemLayout->addWidget(nameLabel, 1);
+
+        // Add button
+        QPushButton *addButton = new QPushButton("+ Add");
+        addButton->setFixedSize(70, 28);
+        addButton->setStyleSheet(
+            "QPushButton { "
+            "background:#f3f4f6; "
+            "border:1px solid #d1d5db; "
+            "border-radius:6px; "
+            "font-size:12px; "
+            "font-weight:600; "
+            "color:#374151; "
+            "}"
+            "QPushButton:hover { background:#e5e7eb; }"
+        );
+        connect(addButton, &QPushButton::clicked, this, [this, appName]() {
+            onAppAddClicked(appName);
+        });
+        itemLayout->addWidget(addButton);
+
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setSizeHint(QSize(0, 56));
+        suggestionsListWidget->addItem(item);
+        suggestionsListWidget->setItemWidget(item, itemWidget);
+    }
+}
+
+void WorkflowSetupPage::onAppAddClicked(const QString &appName)
+{
+    if (!selectedApps.contains(appName)) {
+        selectedApps.append(appName);
+        qDebug() << "Added app:" << appName;
+        updateSelectedAppsList();
+    }
+}
+
+void WorkflowSetupPage::onAppRemoveClicked(const QString &appName)
+{
+    selectedApps.removeAll(appName);
+    updateSelectedAppsList();
+}
+
+void WorkflowSetupPage::updateSelectedAppsList()
+{
+    selectedAppsListWidget->clear();
+
+    if (selectedApps.isEmpty()) {
+        QLabel *emptyLabel = new QLabel("No apps selected yet");
+        emptyLabel->setStyleSheet(
+            "color:#9ca3af; "
+            "font-style:italic; "
+        );
+        emptyLabel->setAlignment(Qt::AlignCenter);
+        
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setSizeHint(QSize(0, 80));
+        selectedAppsListWidget->addItem(item);
+        selectedAppsListWidget->setItemWidget(item, emptyLabel);
+        return;
+    }
+
+    for (const QString &appName : selectedApps) {
+        const QString &iconName = appIconMap.value(appName);
+
+        // Create item widget
+        QWidget *itemWidget = new QWidget();
+        QHBoxLayout *itemLayout = new QHBoxLayout(itemWidget);
+        itemLayout->setContentsMargins(0, 0, 0, 0);
+        itemLayout->setSpacing(12);
+
+        // App icon
+        QIcon appIcon = QFile::exists(iconName)
+                            ? QIcon(iconName)
+                            : QIcon::fromTheme(iconName);
+        
+        QLabel *iconLabel = new QLabel();
+        iconLabel->setPixmap(appIcon.pixmap(24, 24));
+        iconLabel->setFixedSize(24, 24);
+        itemLayout->addWidget(iconLabel);
+
+        // App name
+        QLabel *nameLabel = new QLabel(appName);
+        nameLabel->setStyleSheet(
+            "font-size:13px; "
+            "color:#1f2937; "
+            "font-weight:500; "
+        );
+        itemLayout->addWidget(nameLabel, 1);
+
+        // Remove button
+        QPushButton *removeButton = new QPushButton("✕ Remove");
+        removeButton->setFixedSize(80, 28);
+        removeButton->setStyleSheet(
+            "QPushButton { "
+            "background:#fee2e2; "
+            "border:1px solid #fca5a5; "
+            "border-radius:6px; "
+            "font-size:12px; "
+            "font-weight:600; "
+            "color:#dc2626; "
+            "}"
+            "QPushButton:hover { background:#fecaca; }"
+        );
+        connect(removeButton, &QPushButton::clicked, this, [this, appName]() {
+            onAppRemoveClicked(appName);
+        });
+        itemLayout->addWidget(removeButton);
+
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setSizeHint(QSize(0, 56));
+        selectedAppsListWidget->addItem(item);
+        selectedAppsListWidget->setItemWidget(item, itemWidget);
+    }
+}
+
+void WorkflowSetupPage::updateDurationLabel(int totalMinutes)
+{
     int hours = totalMinutes / 60;
     int minutes = totalMinutes % 60;
 
     QString timeText;
-
     if (hours > 0 && minutes > 0) {
-
         timeText = QString("%1h %2m").arg(hours).arg(minutes);
-    }
-    else if (hours > 0) {
-
+    } else if (hours > 0) {
         timeText = QString("%1h").arg(hours);
-    }
-    else {
-
+    } else {
         timeText = QString("%1m").arg(minutes);
     }
 
     timeLabel->setText(timeText);
 }
 
+void WorkflowSetupPage::onEmojiButtonClicked()
+{
+    EmojiSelector selector(selectedEmoji, this);
+    if (selector.exec() == QDialog::Accepted) {
+        selectedEmoji = selector.getSelectedEmoji();
+        updateEmojiDisplay();
+    }
+}
+
+void WorkflowSetupPage::updateEmojiDisplay()
+{
+    if (selectedEmojiLabel) {
+        selectedEmojiLabel->setText(selectedEmoji);
+        
+        // Apply proper emoji font (same as EmojiSelector)
+        QFont emojiFont;
+        emojiFont.setFamilies({"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Sans Serif"});
+        emojiFont.setPointSize(28);
+        selectedEmojiLabel->setFont(emojiFont);
+    }
+}
 
 void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
 {
-
-    if (selectedList->count() == 0) {
+    if (selectedApps.isEmpty()) {
         QMessageBox::warning(
             this,
             "Workflow Creation Failed",
-            "You cannot save a workflow without adding at least one application."
-            );
+            "You must add at least one application to your workflow."
+        );
         return;
     }
 
-    QString value = templateName->text().trimmed();
-
-    Workflow w = value.isEmpty()
+    QString workflowName = workflowNameInput->text().trimmed();
+    
+    Workflow w = workflowName.isEmpty()
                      ? Workflow(totalMinutes, isFavorite)
-                     : Workflow(value.toStdString(), totalMinutes, isFavorite);
+                     : Workflow(workflowName.toStdString(), totalMinutes, isFavorite);
 
-
-    for (int i = 0; i < selectedList->count(); ++i) {
-        QListWidgetItem* item = selectedList->item(i);
-        w.addApps(item->text().toStdString());
+    for (const QString &appName : selectedApps) {
+        w.addApps(appName.toStdString());
     }
 
-    if (!selectedIcon.empty()) {
-        w.setIcon(selectedIcon);
-    }
+    w.setIcon(selectedEmoji.toStdString());
 
-    // Create workflows directory if it doesn't exist
+    // Create workflows directory
     QString workflowsDir = QCoreApplication::applicationDirPath() + "/workflows";
     QDir dir;
     if (!dir.exists(workflowsDir)) {
@@ -386,13 +963,9 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
     }
 
     QString filePath = QString("%1/%2.json").arg(workflowsDir, QString::fromStdString(w.getDate()));
-    
-    qDebug() << "Saving workflow to:" << filePath;
     Workflow::saveWorkflowToFile(w, filePath);
-    qDebug() << "Workflow saved successfully";
-
+    
     emit startWorkflow(w);
-
     w.print();
 }
 
@@ -403,49 +976,22 @@ void WorkflowSetupPage::onBackClicked()
 
 void WorkflowSetupPage::onStartWorkflowClicked()
 {
-    createWorkflow(slider->value(), true);
-}
-
-void WorkflowSetupPage::setupIconDisplay()
-{
-    iconDisplayFrame = new QFrame();
-    iconDisplayFrame->setFixedSize(52, 52);
-    iconDisplayFrame->setStyleSheet(
-        "QFrame { background:#E8F4F8; border-radius:16px; border:1px solid #D9E9F2; }"
-    );
-
-    QVBoxLayout *iconLayout = new QVBoxLayout(iconDisplayFrame);
-    iconLayout->setContentsMargins(0, 0, 0, 0);
-    iconLayout->setAlignment(Qt::AlignCenter);
-
-    iconLabel = new QLabel(iconDisplayFrame);
-    iconLabel->setAlignment(Qt::AlignCenter);
-    iconLabel->setStyleSheet("font-size:20px; font-weight:700; color:#0A2540;");
-    iconLayout->addWidget(iconLabel);
-
-    updateIconDisplay();
-}
-
-void WorkflowSetupPage::updateIconDisplay()
-{
-    if (iconLabel) {
-        iconLabel->setText(QString::fromStdString(selectedIcon));
-    }
+    createWorkflow(durationSlider->value(), true);
 }
 
 void WorkflowSetupPage::loadTemplateWorkflow(const Workflow &workflow)
 {
-    templateName->setText(QString::fromStdString(workflow.getName()));
-    slider->setValue(static_cast<int>(workflow.getDuration()));
-    updateLabel(slider->value());
+    workflowNameInput->setText(QString::fromStdString(workflow.getName()));
+    durationSlider->setValue(static_cast<int>(workflow.getDuration()));
+    updateDurationLabel(durationSlider->value());
 
-    selectedList->clear();
+    selectedApps.clear();
     for (const auto &app : workflow.getApps()) {
-        selectedList->addItem(new QListWidgetItem(QString::fromStdString(app)));
+        selectedApps.append(QString::fromStdString(app));
     }
 
-    selectedIcon = workflow.getIcon();
-    updateIconDisplay();
+    selectedEmoji = QString::fromStdString(workflow.getIcon());
+    updateEmojiDisplay();
 }
 
 

@@ -42,6 +42,9 @@ set(PROJECT_SOURCES
     workflowsetuppage.cpp
     workflowsetuppage.h
 
+    emoji_selector.cpp
+    emoji_selector.h
+
     workflow.cpp
     workflow.h
 

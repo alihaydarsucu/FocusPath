@@ -1,7 +1,6 @@
 #ifndef WORKFLOWSETUPPAGE_H
 #define WORKFLOWSETUPPAGE_H
 
-#include "clickablelabel.h"
 #include "workflow.h"
 #include <QWidget>
 #include <QStackedWidget>
@@ -9,7 +8,8 @@
 #include <QLabel>
 #include <QFrame>
 #include <QPushButton>
-#include <string>
+#include <QString>
+#include <QMap>
 
 class QLineEdit;
 class QListWidget;
@@ -29,32 +29,41 @@ signals:
     void backToDashboard();
 
 private:
-
-    QLineEdit   *templateName;
-    QListWidget *allAppsList;
-    QListWidget *selectedList;
+    // UI Components
     QStackedWidget *stacked;
-    ClickableLabel *appsSetup;
-    ClickableLabel *durationSetup;
+    
+    // App Setup Page (Page 0)
+    QLineEdit *appSearchInput;
+    QListWidget *suggestionsListWidget;
+    QListWidget *selectedAppsListWidget;
+    
+    // Duration Setup Page (Page 1)
+    QLineEdit *workflowNameInput;
+    QSlider *durationSlider;
     QLabel *timeLabel;
-    QSlider *slider;
-    QFrame *iconDisplayFrame;
-    QLabel *iconLabel;
-    QPushButton *startWorkflowButton;
-    QPushButton *backButton;
-
-    std::string selectedIcon;
-
+    QLabel *selectedEmojiLabel;
+    
+    // Data
+    QString selectedEmoji;
+    QMap<QString, QString> appIconMap;
+    QStringList selectedApps;
+    
+    // UI Setup Methods
+    void setupAppSetupPage();
+    void setupDurationSetupPage();
+    
+    // Logic Methods
     void loadLinuxApps();
+    void filterApps(const QString &searchText);
+    void onAppAddClicked(const QString &appName);
+    void onAppRemoveClicked(const QString &appName);
+    void updateSelectedAppsList();
+    void updateDurationLabel(int totalMinutes);
+    void createWorkflow(int totalMinutes, bool isFavorite);
     void onBackClicked();
     void onStartWorkflowClicked();
-    void filterPopup(const QString &text);
-    void showPopup();
-    void closePopup();
-    void updateLabel(int totalMinutes);
-    void createWorkflow(int totalMinutes, bool isFavorite);
-    void setupIconDisplay();
-    void updateIconDisplay();
+    void onEmojiButtonClicked();
+    void updateEmojiDisplay();
 };
 
 #endif // WORKFLOWSETUPPAGE_H
