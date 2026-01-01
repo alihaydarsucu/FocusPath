@@ -81,6 +81,9 @@ set(PROJECT_SOURCES
     templatespage.cpp
     templatespage.h
 
+    historypage.cpp
+    historypage.h
+
     WorkflowCard.cpp
     WorkflowCard.h
 

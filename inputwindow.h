@@ -10,6 +10,7 @@
 // Forward declarations
 class DashboardPage;
 class WorkflowSetupPage;
+class HistoryPage;
 class ClickableLabel;
 
 

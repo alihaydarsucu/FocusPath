@@ -2,6 +2,7 @@
 
 #include "dashboardpage.h"
 #include "workflowsetuppage.h"
+#include "historypage.h"
 #include "templatespage.h"
 
 #include <QVBoxLayout>
@@ -81,7 +82,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
     DashboardPage *dashboardPage = new DashboardPage(this);
     WorkflowSetupPage *workflowPage  = new WorkflowSetupPage(this);
-    QWidget *historyPage   = new QWidget(this);
+    HistoryPage *historyPage   = new HistoryPage(this);
     TemplatesPage *templatesPage = new TemplatesPage(this);
 
     stack->addWidget(dashboardPage);
@@ -119,6 +120,13 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
     // Connect templates page start workflow signal
     connect(templatesPage, &TemplatesPage::startWorkflow,
+            this, [=](Workflow &workflow) {
+                emit requestOutputPage(workflow);
+                emit startRequested();
+            });
+
+    // Connect history page start workflow signal
+    connect(historyPage, &HistoryPage::startWorkflow,
             this, [=](Workflow &workflow) {
                 emit requestOutputPage(workflow);
                 emit startRequested();

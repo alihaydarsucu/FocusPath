@@ -165,11 +165,13 @@ void WorkflowCard::setData() {
 
     // Display apps as icons (simplified - showing first 3 app names)
     QString appsText;
-    int count = qMin(apps.size(), 3);
+    int count = qMin(static_cast<int>(apps.size()), 3);
+    qDebug() << "WorkflowCard::setData() - apps.size()=" << apps.size() << ", count=" << count << ", workflowName=" << workflowName;
+    
     for (int i = 0; i < count; ++i) {
         if (i > 0) appsText += "  ";
         // Simple representation - you can add actual app icons later
-        QString appName = apps[i];
+        QString appName = apps.at(i);  // Use .at() for bounds checking
         if (appName.length() > 15) {
             appName = appName.left(12) + "...";
         }
@@ -243,9 +245,11 @@ QColor WorkflowCard::getColorForWorkflow(const QString &name) {
         return QColor(66, 133, 244);  // Blue for email
     }
     
-    // Default colors based on hash of name
-    int hash = qHash(name);
-    QList<QColor> colors = {
+    // Default colors based on hash of name - use simple modulo without QList
+    uint hash = qHash(name);
+    
+    // Define colors as array instead of QList
+    const QColor defaultColors[] = {
         QColor(102, 187, 106),  // Green
         QColor(66, 133, 244),   // Blue
         QColor(171, 71, 188),   // Purple
@@ -253,7 +257,8 @@ QColor WorkflowCard::getColorForWorkflow(const QString &name) {
         QColor(38, 166, 154)    // Teal
     };
     
-    return colors[hash % colors.size()];
+    int colorCount = 5;
+    return defaultColors[hash % colorCount];
 }
 
 void WorkflowCard::enterEvent(QEnterEvent *event) {
