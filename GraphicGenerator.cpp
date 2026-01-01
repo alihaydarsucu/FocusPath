@@ -1,4 +1,4 @@
-#include "GraphicGenerator.h"
+#include "GraphicGenerator_header_and_structs.h"
 #include <sstream>
 #include <iomanip>
 #include <cmath>
