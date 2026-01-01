@@ -26,12 +26,15 @@
 WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     : QWidget(parent)
 {
+    selectedIcon = "🚀";
+
     QVBoxLayout *root = new QVBoxLayout(this);
-    root->setContentsMargins(120, 40, 120, 50);
+    root->setContentsMargins(120, 30, 120, 40);
 
     appsSetup = new ClickableLabel();
     durationSetup = new ClickableLabel();
-    QPushButton *createWorkflowButton = new QPushButton("Create Workflow");
+    startWorkflowButton = new QPushButton("Start Session");
+    backButton = new QPushButton("Back");
 
     appsSetup->setText("Apps Setup");
     durationSetup->setText("Duration Setup");
@@ -44,7 +47,6 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     root->addWidget(mainCard);
     root->addWidget(appsSetup);
     root->addWidget(durationSetup);
-    root->addWidget(createWorkflowButton);
 
 
     mainCard->setStyleSheet(
@@ -147,8 +149,52 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     line->setStyleSheet("background:#F8F9FA;");
 
     QLabel *titleTemplate = new QLabel("Save as Template");
+    titleTemplate->setStyleSheet("font-size:16px; font-weight:600;");
     templateName = new QLineEdit();
     templateName->setPlaceholderText("Give a name your template..");
+    templateName->setStyleSheet(
+        "QLineEdit { border:1px solid #ddd; border-radius:10px; padding:10px; font-size:14px; }"
+    );
+
+    // Icon selection row
+    setupIconDisplay();
+
+    QLabel *iconHint = new QLabel("Pick an icon for this template");
+    iconHint->setStyleSheet("font-size:13px; color:#6C757D;");
+
+    QGridLayout *iconButtonsLayout = new QGridLayout();
+    iconButtonsLayout->setHorizontalSpacing(8);
+    iconButtonsLayout->setVerticalSpacing(8);
+    QStringList emojiList {
+        "🔥","🎨","✉️","📚","🧘","🚀","💡","🎯","💻","🎵","🍃","☕","📖","🧪","🧩","🎬","🌙","🏃"
+    };
+    int colCount = 6;
+    int idx = 0;
+    for (const QString &emoji : emojiList) {
+        int r = idx / colCount;
+        int c = idx % colCount;
+        QPushButton *btn = new QPushButton(emoji);
+        btn->setCheckable(true);
+        btn->setStyleSheet(
+            "QPushButton { background:#F7F7F7; border:1px solid #E0E0E0; border-radius:10px; padding:8px 12px; font-size:16px; }"
+            "QPushButton:checked { background:#0078D4; color:white; border-color:#0078D4; }"
+        );
+        if (emoji == QString::fromStdString(selectedIcon)) {
+            btn->setChecked(true);
+        }
+        connect(btn, &QPushButton::clicked, this, [this, btn, emoji, iconButtonsLayout]() {
+            for (int i = 0; i < iconButtonsLayout->count(); ++i) {
+                auto otherBtn = qobject_cast<QPushButton*>(iconButtonsLayout->itemAt(i)->widget());
+                if (otherBtn && otherBtn != btn) {
+                    otherBtn->setChecked(false);
+                }
+            }
+            selectedIcon = emoji.toStdString();
+            updateIconDisplay();
+        });
+        iconButtonsLayout->addWidget(btn, r, c);
+        idx++;
+    }
 
 
     pageTwoLayout->addLayout(headerLayout);
@@ -162,6 +208,13 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     pageTwoLayout->addSpacing(15);
     pageTwoLayout->addWidget(titleTemplate);
     pageTwoLayout->addWidget(templateName);
+    pageTwoLayout->addSpacing(8);
+    pageTwoLayout->addWidget(iconHint);
+    QHBoxLayout *iconRow = new QHBoxLayout();
+    iconRow->addWidget(iconDisplayFrame);
+    iconRow->addLayout(iconButtonsLayout);
+    iconRow->addStretch();
+    pageTwoLayout->addLayout(iconRow);
 
 
 
@@ -214,9 +267,25 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
         stacked->setCurrentIndex(1);
     });
 
-    connect(createWorkflowButton, &QPushButton::clicked, this, [=]() {
-        onBackClicked();
-    });
+    QHBoxLayout *actionRow = new QHBoxLayout();
+    actionRow->addWidget(backButton);
+    actionRow->addStretch();
+    actionRow->addWidget(startWorkflowButton);
+
+    backButton->setStyleSheet(
+        "QPushButton { background:#F2F4F5; border:1px solid #E0E0E0; border-radius:10px; padding:10px 16px; font-weight:600; }"
+        "QPushButton:hover { background:#e9ecef; }"
+    );
+    startWorkflowButton->setStyleSheet(
+        "QPushButton { background:#0078D4; color:white; border:none; border-radius:10px; padding:10px 18px; font-weight:700; }"
+        "QPushButton:hover { background:#005A9E; }"
+    );
+
+    connect(startWorkflowButton, &QPushButton::clicked, this, &WorkflowSetupPage::onStartWorkflowClicked);
+    connect(backButton, &QPushButton::clicked, this, &WorkflowSetupPage::onBackClicked);
+
+    root->addSpacing(12);
+    root->addLayout(actionRow);
 }
 
 
@@ -295,13 +364,17 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
     QString value = templateName->text().trimmed();
 
     Workflow w = value.isEmpty()
-                     ? Workflow(totalMinutes, false)
-                     : Workflow(value.toStdString(), totalMinutes, true);
+                     ? Workflow(totalMinutes, isFavorite)
+                     : Workflow(value.toStdString(), totalMinutes, isFavorite);
 
 
     for (int i = 0; i < selectedList->count(); ++i) {
         QListWidgetItem* item = selectedList->item(i);
         w.addApps(item->text().toStdString());
+    }
+
+    if (!selectedIcon.empty()) {
+        w.setIcon(selectedIcon);
     }
 
     // Create workflows directory if it doesn't exist
@@ -325,21 +398,64 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
 
 void WorkflowSetupPage::onBackClicked()
 {
-    QMessageBox msg(this);
-    msg.setWindowTitle("Confirm");
-    msg.setText("Are you sure you want to save this Workflow!!");
-    msg.setInformativeText("Workflow session will begin.");
-    msg.setIcon(QMessageBox::Warning);
+    emit backToDashboard();
+}
 
-    QPushButton *yesBtn = msg.addButton("Yes", QMessageBox::AcceptRole);
-    msg.addButton("Cancel", QMessageBox::RejectRole);
+void WorkflowSetupPage::onStartWorkflowClicked()
+{
+    createWorkflow(slider->value(), true);
+}
 
-    msg.exec();
+void WorkflowSetupPage::setupIconDisplay()
+{
+    iconDisplayFrame = new QFrame();
+    iconDisplayFrame->setFixedSize(52, 52);
+    iconDisplayFrame->setStyleSheet(
+        "QFrame { background:#E8F4F8; border-radius:16px; border:1px solid #D9E9F2; }"
+    );
 
-    if (msg.clickedButton() == yesBtn) {
-        createWorkflow(slider->value(), false);
+    QVBoxLayout *iconLayout = new QVBoxLayout(iconDisplayFrame);
+    iconLayout->setContentsMargins(0, 0, 0, 0);
+    iconLayout->setAlignment(Qt::AlignCenter);
+
+    iconLabel = new QLabel(iconDisplayFrame);
+    iconLabel->setAlignment(Qt::AlignCenter);
+    iconLabel->setStyleSheet("font-size:20px; font-weight:700; color:#0A2540;");
+    iconLayout->addWidget(iconLabel);
+
+    updateIconDisplay();
+}
+
+void WorkflowSetupPage::updateIconDisplay()
+{
+    if (iconLabel) {
+        iconLabel->setText(QString::fromStdString(selectedIcon));
     }
 }
+
+void WorkflowSetupPage::loadTemplateWorkflow(const Workflow &workflow)
+{
+    templateName->setText(QString::fromStdString(workflow.getName()));
+    slider->setValue(static_cast<int>(workflow.getDuration()));
+    updateLabel(slider->value());
+
+    selectedList->clear();
+    for (const auto &app : workflow.getApps()) {
+        selectedList->addItem(new QListWidgetItem(QString::fromStdString(app)));
+    }
+
+    selectedIcon = workflow.getIcon();
+    updateIconDisplay();
+}
+
+
+
+
+
+
+
+
+
 
 
 

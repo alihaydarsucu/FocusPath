@@ -2,6 +2,7 @@
 
 #include "dashboardpage.h"
 #include "workflowsetuppage.h"
+#include "templatespage.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -81,7 +82,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     DashboardPage *dashboardPage = new DashboardPage(this);
     WorkflowSetupPage *workflowPage  = new WorkflowSetupPage(this);
     QWidget *historyPage   = new QWidget(this);
-    QWidget *templatesPage = new QWidget(this);
+    TemplatesPage *templatesPage = new TemplatesPage(this);
 
     stack->addWidget(dashboardPage);
     stack->addWidget(workflowPage);
@@ -116,6 +117,23 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
                 emit startRequested();     // sayfa geçişi
             });
 
+    // Connect templates page start workflow signal
+    connect(templatesPage, &TemplatesPage::startWorkflow,
+            this, [=](Workflow &workflow) {
+                emit requestOutputPage(workflow);
+                emit startRequested();
+            });
+
+    connect(workflowPage, &WorkflowSetupPage::backToDashboard, this, [=]() {
+        stack->setCurrentIndex(0);
+        if (current != dashboard) {
+            current->setSelected(false);
+            current->setStyleSheet("font-size:16px; font-weight:450; color:#5F6368;");
+            dashboard->setSelected(true);
+            dashboard->setStyleSheet("font-size:16px; font-weight:600; color:#0078d4;");
+            current = dashboard;
+        }
+    });
 
 
     connect(dashboardPage, &DashboardPage::pageRequested,
@@ -146,9 +164,16 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     mainLayout->addWidget(stack, 1);
 
     resize(1200, 800);
+}
 
-
-
-
-
+void InputWindow::showDashboard()
+{
+    stack->setCurrentIndex(0);
+    if (current != dashboard) {
+        current->setSelected(false);
+        current->setStyleSheet("font-size:16px; font-weight:450; color:#5F6368;");
+        dashboard->setSelected(true);
+        dashboard->setStyleSheet("font-size:16px; font-weight:600; color:#0078d4;");
+        current = dashboard;
+    }
 }

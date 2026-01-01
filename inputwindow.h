@@ -20,6 +20,9 @@ class InputWindow : public QWidget
 public:
     explicit InputWindow(QWidget *parent = nullptr);
 
+public slots:
+    void showDashboard();
+
 
 signals:
     void requestOutputPage(Workflow &workflow);

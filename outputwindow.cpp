@@ -51,7 +51,7 @@ OutputWindow::OutputWindow(QWidget *parent)
             });
 
     connect(resultPage, &ResultPage::backRequested, [=]() {
-        stacked->setCurrentWidget(workflowPage);
+        emit backToDashboardRequested();
     });
     mainLayout->addWidget(topWidget);
     mainLayout->addWidget(line);

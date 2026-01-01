@@ -78,6 +78,12 @@ set(PROJECT_SOURCES
     resultpage.cpp
     resultpage.h
 
+    templatespage.cpp
+    templatespage.h
+
+    WorkflowCard.cpp
+    WorkflowCard.h
+
     resources.qrc
 )
 

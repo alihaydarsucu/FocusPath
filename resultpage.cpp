@@ -18,7 +18,7 @@ void ResultPage::setupUI()
     title->setAlignment(Qt::AlignCenter);
     title->setStyleSheet("font-size: 22px; font-weight: bold;");
 
-    QPushButton *backBtn = new QPushButton("Back to Workflow", this);
+    QPushButton *backBtn = new QPushButton("Back to Dashboard", this);
 
     connect(backBtn, &QPushButton::clicked, this, &ResultPage::backRequested);
 

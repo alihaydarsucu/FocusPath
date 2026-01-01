@@ -7,6 +7,9 @@
 #include <QStackedWidget>
 #include <QSlider>
 #include <QLabel>
+#include <QFrame>
+#include <QPushButton>
+#include <string>
 
 class QLineEdit;
 class QListWidget;
@@ -19,12 +22,11 @@ class WorkflowSetupPage : public QWidget
 
 public:
     explicit WorkflowSetupPage(QWidget *parent = nullptr);
-
-protected:
+    void loadTemplateWorkflow(const Workflow &workflow);
 
 signals:
-
     void startWorkflow(Workflow &workflow);
+    void backToDashboard();
 
 private:
 
@@ -36,15 +38,23 @@ private:
     ClickableLabel *durationSetup;
     QLabel *timeLabel;
     QSlider *slider;
+    QFrame *iconDisplayFrame;
+    QLabel *iconLabel;
+    QPushButton *startWorkflowButton;
+    QPushButton *backButton;
 
+    std::string selectedIcon;
 
     void loadLinuxApps();
     void onBackClicked();
+    void onStartWorkflowClicked();
     void filterPopup(const QString &text);
     void showPopup();
     void closePopup();
     void updateLabel(int totalMinutes);
     void createWorkflow(int totalMinutes, bool isFavorite);
+    void setupIconDisplay();
+    void updateIconDisplay();
 };
 
 #endif // WORKFLOWSETUPPAGE_H

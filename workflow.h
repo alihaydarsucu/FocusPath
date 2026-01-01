@@ -14,6 +14,7 @@ private:
     std::vector<std::string> apps;
     long duration;
     bool isFavorite;
+    std::string icon;
 
 
     std::chrono::system_clock::time_point createdAt;
@@ -39,8 +40,10 @@ public:
     std::string getDate() const;
     long getDuration() const;
     bool getisFavorite() const ;
+    std::string getIcon() const;
     const std::vector<std::string>& getApps() const ;
     void setDate(const std::string &d);
+    void setIcon(const std::string &iconValue);
     static void saveWorkflowToFile(const Workflow &wf, const QString &filePath);
     static Workflow loadWorkflowFromFile(const QString &filePath);
 

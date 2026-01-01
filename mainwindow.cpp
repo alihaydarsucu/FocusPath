@@ -37,6 +37,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(output, &OutputWindow::workflowComplated,
             this, &MainWindow::stopTracking);
 
+    connect(output, &OutputWindow::backToDashboardRequested, this, [=]() {
+        stack->setCurrentWidget(input);
+        input->showDashboard();
+    });
+
 }
 
 void MainWindow::goToOutput(Workflow &workflow)

@@ -21,5 +21,6 @@ public slots:
     void onWorkflowReady(Workflow &workflow);
 signals:
     void workflowComplated();
+    void backToDashboardRequested();
 
 };

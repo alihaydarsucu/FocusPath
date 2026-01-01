@@ -22,14 +22,14 @@ void Workflow::setCurrentDateTime()
 
 
 Workflow::Workflow(long duration, bool isFavorite)
-    : name(""), duration(duration), isFavorite(isFavorite)
+    : name(""), duration(duration), isFavorite(isFavorite), icon("")
 {
     setCurrentDateTime();
 }
 
 
 Workflow::Workflow(std::string name, long duration, bool isFavorite)
-    : name(name), duration(duration), isFavorite(isFavorite)
+    : name(std::move(name)), duration(duration), isFavorite(isFavorite), icon("")
 {
     setCurrentDateTime();
 }
@@ -57,6 +57,10 @@ bool Workflow::getisFavorite() const {
     return isFavorite;
 }
 
+std::string Workflow::getIcon() const {
+    return icon;
+}
+
 long Workflow::getDuration() const
 {
     return duration;
@@ -64,6 +68,10 @@ long Workflow::getDuration() const
 
 void Workflow::setDate(const std::string &d) {
     date = d;
+}
+
+void Workflow::setIcon(const std::string &iconValue) {
+    icon = iconValue;
 }
 
 void Workflow::print() const
@@ -82,6 +90,9 @@ QJsonObject workflowToJson(const Workflow &wf) {
     obj["duration"] = static_cast<qint64>(wf.getDuration());
     obj["isFavorite"] = wf.getisFavorite();
     obj["date"] = QString::fromStdString(wf.getDate());
+    if (!wf.getIcon().empty()) {
+        obj["icon"] = QString::fromStdString(wf.getIcon());
+    }
 
     QJsonArray appsArray;
     for (const std::string &app : wf.getApps()) {
@@ -125,9 +136,11 @@ Workflow Workflow::loadWorkflowFromFile(const QString &filePath) {
     long duration = obj["duration"].toVariant().toLongLong();
     bool isFavorite = obj["isFavorite"].toBool();
     std::string date = obj["date"].toString().toStdString();
+    std::string iconValue = obj.contains("icon") ? obj["icon"].toString().toStdString() : "";
 
     Workflow wf(name, duration, isFavorite);
     wf.setDate(date);
+    wf.setIcon(iconValue);
 
     QJsonArray appsArray = obj["apps"].toArray();
     for (const auto &val : appsArray) {
