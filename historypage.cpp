@@ -13,6 +13,9 @@
 #include <QFrame>
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
+#include <QtSvgWidgets/QSvgWidget>
+#include <QRandomGenerator>
+#include <algorithm>
 
 HistoryPage::HistoryPage(QWidget *parent)
     : QWidget(parent), currentDateFilter(0), totalFocusTimeMs(0), averageEfficiency(0)
@@ -115,17 +118,11 @@ void HistoryPage::setupUI() {
     weeklyLayout->addLayout(weeklyHeaderLayout);
     
     // Weekly chart placeholder
-    weeklyChartLabel = new QLabel("📊 Daily Focus Time Distribution (Mon-Sun)");
-    weeklyChartLabel->setAlignment(Qt::AlignCenter);
-    weeklyChartLabel->setStyleSheet(
-        "background-color: #F3F4F6; "
-        "border-radius: 12px; "
-        "padding: 40px; "
-        "color: #9CA3AF; "
-        "font-size: 13px;"
-    );
-    weeklyChartLabel->setMinimumHeight(220);
-    weeklyLayout->addWidget(weeklyChartLabel);
+    weeklyChartWidget = new QSvgWidget();
+    weeklyChartWidget->setMinimumSize(640, 260);
+    weeklyChartWidget->setMaximumSize(640, 260);
+    weeklyChartWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    weeklyLayout->addWidget(weeklyChartWidget, 0, Qt::AlignHCenter);
     
     mainLayout->addWidget(weeklyFrame);
 
@@ -310,8 +307,54 @@ void HistoryPage::calculateWeeklyStats() {
 }
 
 void HistoryPage::displayWeeklyOverview() {
-    // This is already done in calculateWeeklyStats
-    // Could be extended to display a chart here
+    QDate today = QDate::currentDate();
+    QDate weekStart = today.addDays(-(today.dayOfWeek() - 1)); // Monday
+
+    // Sum minutes per day for the current week
+    QVector<long long> minutesByDay(7, 0);
+    for (const Workflow &wf : allWorkflows) {
+        const QString stamp = QString::fromStdString(wf.getDate());
+        const QDate d = QDate::fromString(stamp, "yyyy-MM-dd HH:mm:ss");
+        if (!d.isValid()) continue;
+        const int offset = weekStart.daysTo(d);
+        if (offset >= 0 && offset < 7) {
+            minutesByDay[offset] += wf.getDuration();
+        }
+    }
+
+    const long long maxMinutes = *std::max_element(minutesByDay.constBegin(), minutesByDay.constEnd());
+    const int width = 640;
+    const int height = 260;
+    const int chartHeight = 200;
+    const int barWidth = 60;
+    const int gap = 25;
+    const int baseY = 230;
+    const QStringList days = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+
+    QString svg;
+    svg += QString("<svg width='%1' height='%2' xmlns='http://www.w3.org/2000/svg'>").arg(width).arg(height);
+    svg += "<rect width='100%' height='100%' fill='#F9FAFB' rx='12'/>";
+
+    int x = 26;
+    for (int i = 0; i < minutesByDay.size(); ++i) {
+        const long long minutes = minutesByDay[i];
+        const double ratio = (maxMinutes > 0) ? static_cast<double>(minutes) / maxMinutes : 0.0;
+        const int h = static_cast<int>(ratio * chartHeight);
+        const int y = baseY - h;
+
+        svg += QString("<rect x='%1' y='%2' width='%3' height='%4' rx='10' fill='#3B9EDF'/>")
+                   .arg(x).arg(y).arg(barWidth).arg(h);
+        svg += QString("<text x='%1' y='%2' text-anchor='middle' font-size='11' fill='#1F2937'>%3</text>")
+                   .arg(x + barWidth / 2).arg(baseY + 18).arg(days[i]);
+        svg += QString("<text x='%1' y='%2' text-anchor='middle' font-size='10' fill='#111827'>%3m</text>")
+                   .arg(x + barWidth / 2).arg(y - 6).arg(minutes);
+        x += barWidth + gap;
+    }
+
+    svg += "</svg>";
+    if (weeklyChartWidget) {
+        weeklyChartWidget->load(svg.toUtf8());
+    }
 }
 
 void HistoryPage::displaySessionsList() {
@@ -555,8 +598,9 @@ void HistoryPage::displaySessionsList() {
         );
         startButton->setCursor(Qt::PointingHandCursor);
         connect(startButton, &QPushButton::clicked, this, [this, wf]() {
-            Workflow workflow = wf;
-            emit startWorkflow(workflow);
+            // Keep a persistent copy so downstream users don't see a dangling reference
+            activeWorkflowFromHistory = std::make_unique<Workflow>(wf);
+            emit startWorkflow(*activeWorkflowFromHistory);
         });
         sessionLayout->addWidget(startButton);
         
@@ -583,6 +627,9 @@ void HistoryPage::displaySessionsList() {
             "}"
         );
         viewButton->setCursor(Qt::PointingHandCursor);
+        connect(viewButton, &QPushButton::clicked, this, [this, wf]() {
+            emit viewReportRequested(wf);
+        });
         sessionLayout->addWidget(viewButton);
         
         sessionsLayout->addWidget(sessionFrame, row, 0);

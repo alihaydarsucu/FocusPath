@@ -11,6 +11,8 @@
 #include <QVector>
 #include <QHash>
 #include <QDate>
+#include <QtSvgWidgets/QSvgWidget>
+#include <memory>
 #include "workflow.h"
 
 class HistoryPage : public QWidget
@@ -23,6 +25,7 @@ public:
 
 signals:
     void startWorkflow(Workflow &workflow);
+    void viewReportRequested(const Workflow &workflow);
 
 private slots:
     void onSearchTextChanged(const QString &text);
@@ -48,7 +51,7 @@ private:
     
     // UI Components - Weekly Overview
     QLabel *totalFocusTimeLabel;
-    QLabel *weeklyChartLabel;  // Placeholder for chart
+    QSvgWidget *weeklyChartWidget{};
     
     // UI Components - Sessions List
     QScrollArea *scrollArea;
@@ -67,6 +70,9 @@ private:
     // Weekly stats
     long long totalFocusTimeMs;
     int averageEfficiency;
+
+    // Keep an owned copy when starting a workflow from history to avoid dangling refs
+    std::unique_ptr<Workflow> activeWorkflowFromHistory;
 };
 
 #endif // HISTORYPAGE_H
