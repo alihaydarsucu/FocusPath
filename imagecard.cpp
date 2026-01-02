@@ -4,6 +4,7 @@
 #include <QRegion>
 #include <QPixmap>
 #include <QPainterPath>
+#include <QDebug>
 
 ImageCard::ImageCard(QWidget *parent)
     : QFrame(parent)
@@ -39,8 +40,15 @@ ImageCard::ImageCard(QWidget *parent)
         QSizePolicy::Expanding
         );
 
-    imageLabel->setPixmap(QPixmap(":/pictures/suluboya1.PNG"));
+    const QPixmap pixmap(":/pictures/FocusPath_desk.png");
+    imageLabel->setPixmap(pixmap);
     layout->addWidget(imageLabel);
+
+    if (!pixmap.isNull()) {
+        qDebug() << "[ImageCard] Pixmap loaded" << pixmap.size();
+    } else {
+        qDebug() << "[ImageCard] Pixmap missing for FocusPath_desk";
+    }
 
 
     }
