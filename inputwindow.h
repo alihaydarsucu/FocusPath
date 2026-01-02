@@ -28,6 +28,7 @@ public slots:
 signals:
     void requestOutputPage(Workflow &workflow);
     void startRequested();
+    void reportRequested(const Workflow &workflow);
 
 
 

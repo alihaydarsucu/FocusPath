@@ -26,6 +26,7 @@
 WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     : QWidget(parent), selectedEmoji("🚀")
 {
+    qDebug() << "[WorkflowSetupPage] Initializing";
     // Main layout
     QVBoxLayout *rootLayout = new QVBoxLayout(this);
     rootLayout->setContentsMargins(40, 40, 40, 40);
@@ -685,6 +686,7 @@ void WorkflowSetupPage::setupDurationSetupPage()
 
 void WorkflowSetupPage::loadLinuxApps()
 {
+    qDebug() << "[WorkflowSetupPage] Loading Linux apps";
     appIconMap.clear();
 
     // Tüm olası uygulama dizinleri (standart + Snap + AppImage)
@@ -708,6 +710,8 @@ void WorkflowSetupPage::loadLinuxApps()
     for (const QString &dirPath : dirs) {
         QDir dir(dirPath);
         if (!dir.exists()) continue;
+
+        qDebug() << "[WorkflowSetupPage] Scanning" << dirPath;
 
         for (const QString &file : dir.entryList(QStringList() << "*.desktop", QDir::Files)) {
             QSettings settings(dir.absoluteFilePath(file), QSettings::IniFormat);
@@ -737,13 +741,18 @@ void WorkflowSetupPage::loadLinuxApps()
     }
     appIconMap = sortedMap;
 
+    qDebug() << "[WorkflowSetupPage] Loaded" << appIconMap.size() << "apps";
+
     // Populate suggestions widget with all apps
     filterApps("");
 }
 
 void WorkflowSetupPage::filterApps(const QString &searchText)
 {
+    qDebug() << "[WorkflowSetupPage] Filtering apps for" << searchText;
     suggestionsListWidget->clear();
+
+    int matchCount = 0;
 
     for (auto it = appIconMap.begin(); it != appIconMap.end(); ++it) {
         const QString &appName = it.key();
@@ -801,7 +810,11 @@ void WorkflowSetupPage::filterApps(const QString &searchText)
         item->setSizeHint(QSize(0, 56));
         suggestionsListWidget->addItem(item);
         suggestionsListWidget->setItemWidget(item, itemWidget);
+
+        ++matchCount;
     }
+
+    qDebug() << "[WorkflowSetupPage] Filter matched" << matchCount << "apps";
 }
 
 void WorkflowSetupPage::onAppAddClicked(const QString &appName)
@@ -815,6 +828,7 @@ void WorkflowSetupPage::onAppAddClicked(const QString &appName)
 
 void WorkflowSetupPage::onAppRemoveClicked(const QString &appName)
 {
+    qDebug() << "[WorkflowSetupPage] Removing app" << appName;
     selectedApps.removeAll(appName);
     updateSelectedAppsList();
 }
@@ -907,6 +921,7 @@ void WorkflowSetupPage::updateDurationLabel(int totalMinutes)
     }
 
     timeLabel->setText(timeText);
+    qDebug() << "[WorkflowSetupPage] Duration updated to" << timeText;
 }
 
 void WorkflowSetupPage::onEmojiButtonClicked()
@@ -915,6 +930,7 @@ void WorkflowSetupPage::onEmojiButtonClicked()
     if (selector.exec() == QDialog::Accepted) {
         selectedEmoji = selector.getSelectedEmoji();
         updateEmojiDisplay();
+        qDebug() << "[WorkflowSetupPage] Emoji selected" << selectedEmoji;
     }
 }
 
@@ -928,11 +944,13 @@ void WorkflowSetupPage::updateEmojiDisplay()
         emojiFont.setFamilies({"Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Sans Serif"});
         emojiFont.setPointSize(28);
         selectedEmojiLabel->setFont(emojiFont);
+        qDebug() << "[WorkflowSetupPage] Emoji display updated" << selectedEmoji;
     }
 }
 
 void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
 {
+    qDebug() << "[WorkflowSetupPage] Creating workflow" << totalMinutes << "minutes" << "favorite" << isFavorite;
     if (selectedApps.isEmpty()) {
         QMessageBox::warning(
             this,
@@ -952,6 +970,8 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
         w.addApps(appName.toStdString());
     }
 
+    qDebug() << "[WorkflowSetupPage] Selected apps" << selectedApps;
+
     w.setIcon(selectedEmoji.toStdString());
 
     // Create workflows directory
@@ -964,6 +984,8 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
 
     QString filePath = QString("%1/%2.json").arg(workflowsDir, QString::fromStdString(w.getDate()));
     Workflow::saveWorkflowToFile(w, filePath);
+
+    qDebug() << "[WorkflowSetupPage] Workflow saved to" << filePath;
     
     emit startWorkflow(w);
     w.print();
@@ -971,16 +993,19 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
 
 void WorkflowSetupPage::onBackClicked()
 {
+    qDebug() << "[WorkflowSetupPage] Back requested";
     emit backToDashboard();
 }
 
 void WorkflowSetupPage::onStartWorkflowClicked()
 {
+    qDebug() << "[WorkflowSetupPage] Start workflow clicked";
     createWorkflow(durationSlider->value(), true);
 }
 
 void WorkflowSetupPage::loadTemplateWorkflow(const Workflow &workflow)
 {
+    qDebug() << "[WorkflowSetupPage] Loading template" << QString::fromStdString(workflow.getName());
     workflowNameInput->setText(QString::fromStdString(workflow.getName()));
     durationSlider->setValue(static_cast<int>(workflow.getDuration()));
     updateDurationLabel(durationSlider->value());

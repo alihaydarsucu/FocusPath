@@ -6,6 +6,7 @@
 #include "historypage.h"
 #include "templatespage.h"
 
+#include <QDebug>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
@@ -14,6 +15,8 @@
 #include <QLabel>
 
 InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
+
+    qDebug() << "[InputWindow] Initializing";
 
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -24,10 +27,12 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     QWidget *topWidget = new QWidget(this);
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
 
-    QLabel *title = new QLabel("FocusPath", this);
-    title->setStyleSheet("font-size:20px; font-weight:600;");
+    QLabel *logoLabel = new QLabel(this);
+    QPixmap logo(":/pictures/FocusPath.png");
+    logoLabel->setPixmap(logo.scaledToHeight(40, Qt::SmoothTransformation));
     topLayout->addSpacing(10);
-    topLayout->addWidget(title);
+    topLayout->addWidget(logoLabel);
+    topLayout->addSpacing(15);
     topLayout->addStretch();
 
     dashboard = new ClickableLabel(this);
@@ -50,6 +55,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
         topLayout->addStretch();
 
         connect(m, &ClickableLabel::clicked, this, [=]() {
+            qDebug() << "[InputWindow] Menu clicked" << m->text();
             if (current) {
                 current->setSelected(false);
                 current->setStyleSheet(
@@ -96,18 +102,22 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
 
     connect(dashboard, &ClickableLabel::clicked, this, [=]() {
+        qDebug() << "[InputWindow] Switching to dashboard";
         stack->setCurrentIndex(0);
     });
 
     connect(workflowSetup, &ClickableLabel::clicked, this, [=]() {
+        qDebug() << "[InputWindow] Switching to workflow setup";
         stack->setCurrentIndex(1);
     });
 
     connect(history, &ClickableLabel::clicked, this, [=]() {
+        qDebug() << "[InputWindow] Switching to history";
         stack->setCurrentIndex(2);
     });
 
     connect(templates, &ClickableLabel::clicked, this, [=]() {
+        qDebug() << "[InputWindow] Switching to templates";
         stack->setCurrentIndex(3);
     });
 
@@ -116,6 +126,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     connect(workflowPage, &WorkflowSetupPage::startWorkflow,
             this, [=](Workflow &workflow) {
 
+                qDebug() << "[InputWindow] Workflow start requested from setup page";
                 emit requestOutputPage(workflow);   // 🔥 VERİ BURADAN YUKARI ÇIKIYOR
                 emit startRequested();     // sayfa geçişi
             });
@@ -123,6 +134,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     // Connect templates page start workflow signal
     connect(templatesPage, &TemplatesPage::startWorkflow,
             this, [=](Workflow &workflow) {
+                qDebug() << "[InputWindow] Workflow start requested from templates";
                 emit requestOutputPage(workflow);
                 emit startRequested();
             });
@@ -130,11 +142,19 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
     // Connect history page start workflow signal
     connect(historyPage, &HistoryPage::startWorkflow,
             this, [=](Workflow &workflow) {
+                qDebug() << "[InputWindow] Workflow start requested from history";
                 emit requestOutputPage(workflow);
                 emit startRequested();
             });
 
+    connect(historyPage, &HistoryPage::viewReportRequested,
+            this, [=](const Workflow &workflow) {
+                qDebug() << "[InputWindow] View report requested from history";
+                emit reportRequested(workflow);
+            });
+
     connect(workflowPage, &WorkflowSetupPage::backToDashboard, this, [=]() {
+        qDebug() << "[InputWindow] Back to dashboard triggered";
         stack->setCurrentIndex(0);
         if (current != dashboard) {
             current->setSelected(false);
@@ -148,6 +168,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
     connect(dashboardPage, &DashboardPage::pageRequested,
             this, [=](int index) {
+                qDebug() << "[InputWindow] Dashboard requested page" << index;
                 stack->setCurrentIndex(index);
 
 
@@ -176,6 +197,7 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
 void InputWindow::showDashboard()
 {
+    qDebug() << "[InputWindow] showDashboard called";
     stack->setCurrentIndex(0);
     if (current != dashboard) {
         current->setSelected(false);
