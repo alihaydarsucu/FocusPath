@@ -1,5 +1,8 @@
 #include "attention_analyzer.hpp"
 #include "log_parser.hpp"
+
+#include <QDebug>
+#include <algorithm>
 #include <string>
 
 AttentionAnalyzer::AttentionAnalyzer(
@@ -12,6 +15,11 @@ AttentionAnalyzer::AttentionAnalyzer(
 }
 
 AttentionAnalyzer::AttentionStats AttentionAnalyzer::analyze() const {
+    if (events_.empty()) {
+        qWarning() << "[AttentionAnalyzer] No events to analyze";
+        return {};
+    }
+
     long long current_focus_time = 0;
     long long current_distraction_time = 0;
     long long max_focus = 0;
