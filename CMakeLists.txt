@@ -14,8 +14,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg SvgWidgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg SvgWidgets)
 
 # ================== X11 ==================
 find_package(X11 REQUIRED)
@@ -32,6 +32,15 @@ set(PROJECT_SOURCES
 
     FocusCard.cpp
     FocusCard.h
+
+    appcard.cpp
+    appcard.h
+
+    clickableframe.cpp
+    clickableframe.h
+
+    countdownwidget.cpp
+    countdownwidget.h
 
     imagecard.cpp
     imagecard.h
@@ -65,6 +74,9 @@ set(PROJECT_SOURCES
 
     efficiency_meter.cpp
     efficiency_meter.hpp
+
+    GraphicGenerator.cpp
+    GraphicGenerator_header_and_structs.h
 
     system_controller.cpp
     system_controller.hpp
@@ -112,6 +124,8 @@ target_include_directories(fp_project1 PRIVATE
 # ================== LINK ==================
 target_link_libraries(fp_project1 PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Svg
+    Qt${QT_VERSION_MAJOR}::SvgWidgets
     ${X11_LIBRARIES}
 )
 
