@@ -42,6 +42,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(input, &InputWindow::startRequested,
             this, &MainWindow::startTracking);
 
+        connect(input, &InputWindow::reportRequested,
+                this, [=](const Workflow &wf) {
+                    stack->setCurrentWidget(output);
+                    output->showReportForWorkflow(wf);
+                });
+
     connect(output, &OutputWindow::workflowComplated,
             this, &MainWindow::stopTracking);
 
