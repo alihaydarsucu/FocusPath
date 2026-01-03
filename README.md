@@ -6,6 +6,8 @@
 
 Measure how focused you stay by comparing the apps you intended to use with the ones you actually used. FocusPath records every active window change, highlights distraction streaks, and renders SVG charts so you can review your sessions after they end.
 
+Presentation video: https://youtu.be/2Ad7iqPG2-s
+
 ## Features
 - Workflow planning: pick whitelisted apps, set a duration, and label the session with an emoji.
 - Live tracking on X11: the active window and title are logged every 200 ms whenever focus or title changes.
