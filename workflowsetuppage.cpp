@@ -22,11 +22,65 @@
 #include <QCoreApplication>
 #include <QCheckBox>
 #include <QSet>
+#include <QIcon>
+
+// Resolve icon paths from .desktop entries, handling env vars and common icon locations.
+static QString resolveIconPath(const QString &rawIcon, const QString &desktopDir)
+{
+    if (rawIcon.isEmpty()) return QString();
+
+    QString icon = rawIcon;
+
+    const QString snap = qEnvironmentVariable("SNAP");
+    if (!snap.isEmpty()) {
+        icon.replace("${SNAP}", snap);
+        icon.replace("$SNAP", snap);
+    }
+    const QString home = QDir::homePath();
+    icon.replace("${HOME}", home);
+    icon.replace("$HOME", home);
+
+    auto exists = [](const QString &path) { return !path.isEmpty() && QFile::exists(path); };
+
+    if (QDir::isAbsolutePath(icon) && exists(icon)) return icon;
+
+    if (!QDir::isAbsolutePath(icon) && icon.contains('/')) {
+        const QString candidate = QDir(desktopDir).filePath(icon);
+        if (exists(candidate)) return candidate;
+    }
+
+    QStringList searchRoots = {
+        desktopDir,
+        "/usr/share/pixmaps",
+        "/usr/share/icons/hicolor/64x64/apps",
+        "/usr/share/icons/hicolor/48x48/apps",
+        "/var/lib/snapd/desktop/icons"
+    };
+    QStringList extensions = {"", ".png", ".svg", ".xpm"};
+
+    for (const QString &root : searchRoots) {
+        for (const QString &ext : extensions) {
+            const QString candidate = QDir(root).filePath(icon + ext);
+            if (exists(candidate)) return candidate;
+        }
+    }
+
+    return rawIcon;  // Fallback to theme name; handled by QIcon::fromTheme
+}
 
 WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     : QWidget(parent), selectedEmoji("🚀")
 {
     qDebug() << "[WorkflowSetupPage] Initializing";
+
+    // Broaden icon lookup paths so QIcon::fromTheme can find Snap/Flatpak/pixmaps assets.
+    QStringList themePaths = QIcon::themeSearchPaths();
+    themePaths << "/usr/share/icons" << "/usr/share/pixmaps" << "/var/lib/snapd/desktop/icons";
+    themePaths.removeDuplicates();
+    QIcon::setThemeSearchPaths(themePaths);
+    if (QIcon::themeName().isEmpty()) {
+        QIcon::setThemeName("hicolor");
+    }
     // Main layout
     QVBoxLayout *rootLayout = new QVBoxLayout(this);
     rootLayout->setContentsMargins(40, 40, 40, 40);
@@ -714,14 +768,15 @@ void WorkflowSetupPage::loadLinuxApps()
         qDebug() << "[WorkflowSetupPage] Scanning" << dirPath;
 
         for (const QString &file : dir.entryList(QStringList() << "*.desktop", QDir::Files)) {
-            QSettings settings(dir.absoluteFilePath(file), QSettings::IniFormat);
+            const QString desktopPath = dir.absoluteFilePath(file);
+            QSettings settings(desktopPath, QSettings::IniFormat);
             settings.beginGroup("Desktop Entry");
 
             if (settings.value("Type") != "Application")
                 continue;
 
             QString name = settings.value("Name").toString();
-            QString iconName = settings.value("Icon").toString();
+            const QString iconName = settings.value("Icon").toString();
             if (name.isEmpty())
                 continue;
 
@@ -730,7 +785,8 @@ void WorkflowSetupPage::loadLinuxApps()
                 continue;
 
             seenApps.insert(name);
-            appIconMap[name] = iconName;
+            const QString resolvedIcon = resolveIconPath(iconName, dir.absolutePath());
+            appIconMap[name] = resolvedIcon;
         }
     }
 
@@ -772,9 +828,13 @@ void WorkflowSetupPage::filterApps(const QString &searchText)
         QIcon appIcon = QFile::exists(iconName)
                             ? QIcon(iconName)
                             : QIcon::fromTheme(iconName);
-        
+        if (appIcon.isNull()) {
+            appIcon = QIcon(":/pictures/icons8-play-48.png");
+        }
         QLabel *iconLabel = new QLabel();
-        iconLabel->setPixmap(appIcon.pixmap(24, 24));
+        QPixmap pix = appIcon.pixmap(64, 64).scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        iconLabel->setPixmap(pix);
+        iconLabel->setAlignment(Qt::AlignCenter);
         iconLabel->setFixedSize(24, 24);
         itemLayout->addWidget(iconLabel);
 
@@ -865,9 +925,13 @@ void WorkflowSetupPage::updateSelectedAppsList()
         QIcon appIcon = QFile::exists(iconName)
                             ? QIcon(iconName)
                             : QIcon::fromTheme(iconName);
-        
+        if (appIcon.isNull()) {
+            appIcon = QIcon(":/pictures/icons8-play-48.png");
+        }
         QLabel *iconLabel = new QLabel();
-        iconLabel->setPixmap(appIcon.pixmap(24, 24));
+        QPixmap pix = appIcon.pixmap(64, 64).scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        iconLabel->setPixmap(pix);
+        iconLabel->setAlignment(Qt::AlignCenter);
         iconLabel->setFixedSize(24, 24);
         itemLayout->addWidget(iconLabel);
 
