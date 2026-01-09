@@ -518,25 +518,13 @@ void WorkflowSetupPage::setupDurationSetupPage()
     pageLayout->addWidget(durationLabel);
 
     // Slider
-    durationSlider = new QSlider(Qt::Horizontal);
+    durationSlider = new CustomSlider(Qt::Horizontal);
     durationSlider->setRange(5, 180);
     durationSlider->setValue(45);
-    durationSlider->setFixedHeight(6);
+    durationSlider->setFixedHeight(40);
     durationSlider->setStyleSheet(
-        "QSlider::groove:horizontal { "
-        "border:none; "
-        "height:6px; "
-        "background:#e5e7eb; "
-        "border-radius:3px; "
-        "}"
-        "QSlider::handle:horizontal { "
-        "background:#0078d4; "
-        "width:20px; "
-        "margin:-7px 0; "
-        "border-radius:10px; "
-        "}"
-        "QSlider::handle:horizontal:hover { "
-        "background:#005a9e; "
+        "QSlider { "
+        "background:transparent; "
         "}"
     );
     connect(durationSlider, &QSlider::valueChanged, this, &WorkflowSetupPage::updateDurationLabel);
@@ -567,14 +555,15 @@ void WorkflowSetupPage::setupDurationSetupPage()
     presetsLayout->setSpacing(12);
 
     QPushButton *preset1 = new QPushButton("Pomodoro (25m)");
-    preset1->setFixedHeight(40);
+    preset1->setFixedHeight(48);
     preset1->setStyleSheet(
         "QPushButton { "
         "background:#f3f4f6; "
         "border:1px solid #e5e7eb; "
         "border-radius:8px; "
         "font-weight:600; "
-        "font-size:13px; "
+        "font-size:14px; "
+        "padding:8px 16px; "
         "}"
         "QPushButton:hover { background:#e5e7eb; }"
     );
@@ -582,14 +571,15 @@ void WorkflowSetupPage::setupDurationSetupPage()
     presetsLayout->addWidget(preset1);
 
     QPushButton *preset2 = new QPushButton("Deep Work (45m)");
-    preset2->setFixedHeight(40);
+    preset2->setFixedHeight(48);
     preset2->setStyleSheet(
         "QPushButton { "
         "background:#f3f4f6; "
         "border:1px solid #e5e7eb; "
         "border-radius:8px; "
         "font-weight:600; "
-        "font-size:13px; "
+        "font-size:14px; "
+        "padding:8px 16px; "
         "}"
         "QPushButton:hover { background:#e5e7eb; }"
     );
@@ -597,14 +587,15 @@ void WorkflowSetupPage::setupDurationSetupPage()
     presetsLayout->addWidget(preset2);
 
     QPushButton *preset3 = new QPushButton("Long Session (60m)");
-    preset3->setFixedHeight(40);
+    preset3->setFixedHeight(48);
     preset3->setStyleSheet(
         "QPushButton { "
         "background:#f3f4f6; "
         "border:1px solid #e5e7eb; "
         "border-radius:8px; "
         "font-weight:600; "
-        "font-size:13px; "
+        "font-size:14px; "
+        "padding:8px 16px; "
         "}"
         "QPushButton:hover { background:#e5e7eb; }"
     );

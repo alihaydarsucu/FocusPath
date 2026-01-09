@@ -2,6 +2,7 @@
 #define WORKFLOWSETUPPAGE_H
 
 #include "workflow.h"
+#include "customslider.h"
 #include <QWidget>
 #include <QStackedWidget>
 #include <QSlider>
@@ -39,7 +40,7 @@ private:
     
     // Duration Setup Page (Page 1)
     QLineEdit *workflowNameInput;
-    QSlider *durationSlider;
+    CustomSlider *durationSlider;
     QLabel *timeLabel;
     QLabel *selectedEmojiLabel;
     

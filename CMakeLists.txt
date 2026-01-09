@@ -51,6 +51,9 @@ set(PROJECT_SOURCES
     workflowsetuppage.cpp
     workflowsetuppage.h
 
+    customslider.cpp
+    customslider.h
+
     emoji_selector.cpp
     emoji_selector.h
 
