@@ -12,12 +12,19 @@ CountdownWidget::CountdownWidget(int totalMinutes, QWidget *parent)
 
     qDebug() << "[CountdownWidget] Init with" << totalMinutes << "minutes";
 
-    setStyleSheet("background-color: white; border-radius: 15px;");
+    setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
+        "  border-radius: 15px; "
+        "  border: 2px solid #E8F0F7; "
+        "}"
+    );
 
 
     label = new QLabel(this);
     label->setAlignment(Qt::AlignCenter);
-    label->setStyleSheet("color: #001F3F; font-size: 96px; font-weight: bold;");
+    label->setStyleSheet("color: #0288D1; font-size: 96px; font-weight: bold; background: transparent;");
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(label);

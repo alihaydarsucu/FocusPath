@@ -16,11 +16,19 @@ WorkflowPage::WorkflowPage(QWidget *parent)
 
 void WorkflowPage::setupUI()
 {
+    // Modern gradient background
+    this->setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QLabel *title = new QLabel("Workflow Page", this);
     title->setAlignment(Qt::AlignCenter);
-    title->setStyleSheet("font-size: 22px; font-weight: bold;");
+    title->setStyleSheet("font-size: 22px; font-weight: bold; color: #0288D1;");
 
     // Countdown label
     countdownLabel = new QLabel("--:--", this);
@@ -28,22 +36,24 @@ void WorkflowPage::setupUI()
     countdownLabel->setStyleSheet(
         "font-size: 48px; "
         "font-weight: bold; "
-        "color: #2C3E50; "
-        "padding: 20px;"
+        "color: #0288D1; "
+        "padding: 20px; "
+        "background: transparent;"
     );
 
     QPushButton *stopBtn = new QPushButton("Stop Workflow", this);
     stopBtn->setStyleSheet(
         "QPushButton { "
-        "  background-color: #E74C3C; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #E74C3C, stop:1 #C0392B); "
         "  color: white; "
         "  font-size: 16px; "
         "  font-weight: bold; "
         "  padding: 12px 24px; "
         "  border-radius: 8px; "
+        "  border: none; "
         "} "
         "QPushButton:hover { "
-        "  background-color: #C0392B; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #C0392B, stop:1 #A93226); "
         "}"
     );
 

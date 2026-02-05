@@ -65,7 +65,8 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
             m->setSelected(true);
             m->setStyleSheet(
-                "font-size:16px; font-weight:600; color:#0078d4;"
+                "font-size:16px; font-weight:600; color:#0288D1; "
+                "text-decoration: underline; "
                 );
             current = m;
         });
@@ -74,19 +75,20 @@ InputWindow::InputWindow(QWidget *parent) : QWidget(parent){
 
     dashboard->setSelected(true);
     dashboard->setStyleSheet(
-        "font-size:16px; font-weight:600; color:#0078d4;"
+        "font-size:16px; font-weight:600; color:#0288D1; "
+        "text-decoration: underline; "
         );
     current = dashboard;
 
 
     QFrame *line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
-    line->setFixedHeight(1);
-    line->setStyleSheet("background:#F8F9FA;");
+    line->setFixedHeight(2);
+    line->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #E0F7FF, stop:0.5 #0288D1, stop:1 #E0F7FF);");
 
 
     stack = new QStackedWidget(this);
-    stack->setStyleSheet("background:#F0F0F0;");
+    stack->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #FAFBFF, stop:1 #F0F6FF);");
 
     DashboardPage *dashboardPage = new DashboardPage(this);
     WorkflowSetupPage *workflowPage  = new WorkflowSetupPage(this);

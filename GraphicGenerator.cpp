@@ -64,39 +64,39 @@ ChartOutput GraphicGenerator::createUsageTable(const std::map<std::string, long>
     qDebug() << "[GraphicGenerator] Building usage table rows:" << totalUsage.size();
 
     ChartOutput output;
-    output.title = "Uygulama Kullanım Tablosu";
+    output.title = "Application Usage Table";
     output.chartType = "table";
     
     std::stringstream svg;
-    svg << "<svg width=\"600\" height=\"" << (80 + totalUsage.size() * 40) 
+    svg << "<svg width=\"900\" height=\"" << (80 + totalUsage.size() * 40) 
         << "\" xmlns=\"http://www.w3.org/2000/svg\">\n";
     
-    // Başlık
-    svg << "<text x=\"300\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
-        << "font-weight=\"bold\" fill=\"#333\">Toplam Kullanım Süreleri</text>\n";
+    // Title
+    svg << "<text x=\"450\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
+        << "font-weight=\"bold\" fill=\"#0288D1\">Total Usage Duration</text>\n";
     
-    // Tablo başlıkları
-    svg << "<rect x=\"50\" y=\"50\" width=\"500\" height=\"40\" fill=\"#667eea\" "
-        << "stroke=\"#333\" stroke-width=\"2\"/>\n";
-    svg << "<text x=\"150\" y=\"75\" text-anchor=\"middle\" font-size=\"16\" "
-        << "font-weight=\"bold\" fill=\"white\">Uygulama</text>\n";
-    svg << "<text x=\"450\" y=\"75\" text-anchor=\"middle\" font-size=\"16\" "
-        << "font-weight=\"bold\" fill=\"white\">Süre</text>\n";
+    // Table headers
+    svg << "<rect x=\"50\" y=\"50\" width=\"800\" height=\"40\" fill=\"#0288D1\" "
+        << "stroke=\"#E8F0F7\" stroke-width=\"2\"/>\n";
+    svg << "<text x=\"250\" y=\"75\" text-anchor=\"middle\" font-size=\"16\" "
+        << "font-weight=\"bold\" fill=\"white\">Application</text>\n";
+    svg << "<text x=\"750\" y=\"75\" text-anchor=\"middle\" font-size=\"16\" "
+        << "font-weight=\"bold\" fill=\"white\">Duration</text>\n";
     
-    // Satırlar
+    // Rows
     int y = 90;
     int index = 0;
     for (const auto& pair : totalUsage) {
-        std::string rowColor = (index % 2 == 0) ? "#f8f9fa" : "#ffffff";
+        std::string rowColor = (index % 2 == 0) ? "#F8FBFD" : "#FFFFFF";
         
-        svg << "<rect x=\"50\" y=\"" << y << "\" width=\"500\" height=\"40\" "
-            << "fill=\"" << rowColor << "\" stroke=\"#dee2e6\"/>\n";
+        svg << "<rect x=\"50\" y=\"" << y << "\" width=\"800\" height=\"40\" "
+            << "fill=\"" << rowColor << "\" stroke=\"#E8F0F7\" stroke-width=\"1\"/>\n";
         
-        svg << "<text x=\"150\" y=\"" << (y + 25) << "\" text-anchor=\"middle\" "
+        svg << "<text x=\"250\" y=\"" << (y + 25) << "\" text-anchor=\"middle\" "
             << "font-size=\"14\" fill=\"#333\">" << pair.first << "</text>\n";
         
-        svg << "<text x=\"450\" y=\"" << (y + 25) << "\" text-anchor=\"middle\" "
-            << "font-size=\"14\" font-weight=\"bold\" fill=\"#667eea\">" 
+        svg << "<text x=\"750\" y=\"" << (y + 25) << "\" text-anchor=\"middle\" "
+            << "font-size=\"14\" font-weight=\"bold\" fill=\"#0288D1\">" 
             << formatTime(pair.second) << "</text>\n";
         
         y += 40;
@@ -112,10 +112,10 @@ ChartOutput GraphicGenerator::createTimeline(const std::vector<AppEvent>& events
     qDebug() << "[GraphicGenerator] Creating timeline for" << events.size() << "events";
 
     ChartOutput output;
-    output.title = "Aktivite Zaman Çizelgesi";
+    output.title = "Activity Timeline";
     output.chartType = "timeline";
     
-    // Toplam süreyi hesapla
+    // Calculate total time
     long totalTime = 0;
     for (const auto& event : events) {
         totalTime += event.duration;
@@ -135,11 +135,11 @@ ChartOutput GraphicGenerator::createTimeline(const std::vector<AppEvent>& events
     std::stringstream svg;
     svg << "<svg width=\"900\" height=\"250\" xmlns=\"http://www.w3.org/2000/svg\">\n";
     
-    // Başlık
+    // Title
     svg << "<text x=\"450\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
-        << "font-weight=\"bold\" fill=\"#333\">Zaman Çizelgesi</text>\n";
+        << "font-weight=\"bold\" fill=\"#0288D1\">Application Timeline</text>\n";
     
-    // Timeline çizgisi
+    // Timeline line
     double timelineWidth = 800;
     double currentX = 50;
     int colorIndex = 0;
@@ -152,11 +152,11 @@ ChartOutput GraphicGenerator::createTimeline(const std::vector<AppEvent>& events
             << "\" height=\"60\" fill=\"" << getColor(colorIndex) 
             << "\" stroke=\"white\" stroke-width=\"2\"/>\n";
         
-        // Etiket (eğer yeteri kadar genişse)
+        // Label (if wide enough)
         if (width > 40) {
-            // İsmi kısalt (ilk 5 harf)
-            std::string shortName = event.appName.length() > 5 
-                                   ? event.appName.substr(0, 5) 
+            // Shorten name (first 8 chars)
+            std::string shortName = event.appName.length() > 8 
+                                   ? event.appName.substr(0, 8) 
                                    : event.appName;
             
             svg << "<text x=\"" << (currentX + width/2) << "\" y=\"110\" "
@@ -172,9 +172,9 @@ ChartOutput GraphicGenerator::createTimeline(const std::vector<AppEvent>& events
         colorIndex++;
     }
     
-    // Zaman ekseni
+    // Time axis
     svg << "<line x1=\"50\" y1=\"160\" x2=\"850\" y2=\"160\" "
-        << "stroke=\"#333\" stroke-width=\"2\"/>\n";
+        << "stroke=\"#0288D1\" stroke-width=\"2\"/>\n";
     
     svg << "<text x=\"50\" y=\"180\" font-size=\"12\" fill=\"#666\">0s</text>\n";
     svg << "<text x=\"850\" y=\"180\" text-anchor=\"end\" font-size=\"12\" "
@@ -190,19 +190,19 @@ ChartOutput GraphicGenerator::createPieChart(long listedTime, double listedPerce
     qDebug() << "[GraphicGenerator] Creating pie chart" << listedPercent << unlistedPercent;
 
     ChartOutput output;
-    output.title = "Listelenen/Listelenmayan Uygulamalar";
+    output.title = "Listed/Unlisted Applications";
     output.chartType = "pie";
     
     std::stringstream svg;
-    svg << "<svg width=\"600\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">\n";
+    svg << "<svg width=\"900\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">\n";
     
-    // Başlık
-    svg << "<text x=\"300\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
-        << "font-weight=\"bold\" fill=\"#333\">Uygulama Dağılımı</text>\n";
+    // Title
+    svg << "<text x=\"450\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
+        << "font-weight=\"bold\" fill=\"#0288D1\">Application Distribution</text>\n";
     
-    double cx = 200, cy = 250, r = 120;
+    double cx = 250, cy = 250, r = 120;
     
-    // Özel durum: %100 Listed
+    // Special case: 100% Listed
     if (listedPercent >= 99.9) {
         svg << "<circle cx=\"" << cx << "\" cy=\"" << cy << "\" r=\"" << r 
             << "\" fill=\"rgb(75,192,192)\" stroke=\"white\" stroke-width=\"3\"/>\n";
@@ -210,7 +210,7 @@ ChartOutput GraphicGenerator::createPieChart(long listedTime, double listedPerce
             << "\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"bold\" "
             << "fill=\"white\">100%</text>\n";
     }
-    // Özel durum: %100 Unlisted
+    // Special case: 100% Unlisted
     else if (unlistedPercent >= 99.9) {
         svg << "<circle cx=\"" << cx << "\" cy=\"" << cy << "\" r=\"" << r 
             << "\" fill=\"rgb(255,99,132)\" stroke=\"white\" stroke-width=\"3\"/>\n";
@@ -218,10 +218,10 @@ ChartOutput GraphicGenerator::createPieChart(long listedTime, double listedPerce
             << "\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"bold\" "
             << "fill=\"white\">100%</text>\n";
     }
-    // Normal durum: Her iki dilim de var
+    // Normal case: Both slices present
     else {
-        // Listed apps (yeşil)
-        double listedAngle = listedPercent * 3.6;  // Yüzdeyi açıya çevir
+        // Listed apps (teal)
+        double listedAngle = listedPercent * 3.6;  // Convert percentage to angle
         double listedRad = listedAngle * M_PI / 180.0;
     
         
@@ -246,7 +246,7 @@ ChartOutput GraphicGenerator::createPieChart(long listedTime, double listedPerce
             << "fill=\"white\">" << std::fixed << std::setprecision(1) 
             << listedPercent << "%</text>\n";
         
-        // Unlisted apps (kırmızı)
+        // Unlisted apps (red)
         double unlistedAngle = unlistedPercent * 3.6;
         double unlistedRad = (listedAngle + unlistedAngle) * M_PI / 180.0;
         
@@ -271,15 +271,15 @@ ChartOutput GraphicGenerator::createPieChart(long listedTime, double listedPerce
     }
     
     // Legend
-    svg << "<rect x=\"400\" y=\"150\" width=\"25\" height=\"25\" fill=\"rgb(75,192,192)\"/>\n";
-    svg << "<text x=\"435\" y=\"168\" font-size=\"14\" fill=\"#333\">Listed Apps</text>\n";
-    svg << "<text x=\"435\" y=\"185\" font-size=\"12\" fill=\"#666\">" 
+    svg << "<rect x=\"550\" y=\"150\" width=\"25\" height=\"25\" fill=\"rgb(75,192,192)\"/>\n";
+    svg << "<text x=\"585\" y=\"168\" font-size=\"14\" fill=\"#333\" font-weight=\"bold\">Listed Apps</text>\n";
+    svg << "<text x=\"585\" y=\"185\" font-size=\"12\" fill=\"#666\">" 
         << formatTime(listedTime) << " (" << std::fixed << std::setprecision(1) 
         << listedPercent << "%)</text>\n";
     
-    svg << "<rect x=\"400\" y=\"210\" width=\"25\" height=\"25\" fill=\"rgb(255,99,132)\"/>\n";
-    svg << "<text x=\"435\" y=\"228\" font-size=\"14\" fill=\"#333\">Unlisted Apps</text>\n";
-    svg << "<text x=\"435\" y=\"245\" font-size=\"12\" fill=\"#666\">" 
+    svg << "<rect x=\"550\" y=\"210\" width=\"25\" height=\"25\" fill=\"rgb(255,99,132)\"/>\n";
+    svg << "<text x=\"585\" y=\"228\" font-size=\"14\" fill=\"#333\" font-weight=\"bold\">Unlisted Apps</text>\n";
+    svg << "<text x=\"585\" y=\"245\" font-size=\"12\" fill=\"#666\">" 
         << formatTime(unlistedTime) << " (" << std::fixed << std::setprecision(1) 
         << unlistedPercent << "%)</text>\n";
     
@@ -293,63 +293,63 @@ ChartOutput GraphicGenerator::createStatsBox(int distractionCount, long longestD
     qDebug() << "[GraphicGenerator] Stats" << distractionCount << longestDistraction << longestFocus;
 
     ChartOutput output;
-    output.title = "Dikkat Dağınıklığı İstatistikleri";
+    output.title = "Attention Statistics";
     output.chartType = "stats";
     
     std::stringstream svg;
-    svg << "<svg width=\"600\" height=\"300\" xmlns=\"http://www.w3.org/2000/svg\">\n";
+    svg << "<svg width=\"900\" height=\"300\" xmlns=\"http://www.w3.org/2000/svg\">\n";
     
-    // Başlık
-    svg << "<text x=\"300\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
-        << "font-weight=\"bold\" fill=\"#333\">Performans Metrikleri</text>\n";
+    // Title
+    svg << "<text x=\"450\" y=\"30\" text-anchor=\"middle\" font-size=\"20\" "
+        << "font-weight=\"bold\" fill=\"#0288D1\">Performance Metrics</text>\n";
     
-    // 3 kutu
-    int boxWidth = 140;   // 160'tan 140'a küçültüldü
-    int boxHeight = 100;  // 120'den 100'e küçültüldü
-    int spacing = 25;     // 30'dan 25'e azaltıldı
-    int startX = 80;      // 70'ten 80'e (biraz sağa kaydı)
-    int startY = 80;      // 70'ten 80'e (biraz aşağı kaydı)
+    // 3 boxes with better spacing
+    int boxWidth = 200;
+    int boxHeight = 120;
+    int spacing = 40;
+    int startX = 50;
+    int startY = 70;
     
-    // Kutu 1: Distraction Count
+    // Box 1: Distraction Count (Yellow)
     svg << "<rect x=\"" << startX << "\" y=\"" << startY << "\" width=\"" << boxWidth 
-        << "\" height=\"" << boxHeight << "\" fill=\"#fff3cd\" "
-        << "stroke=\"#ffc107\" stroke-width=\"3\" rx=\"10\"/>\n";
+        << "\" height=\"" << boxHeight << "\" fill=\"#FFF8E1\" "
+        << "stroke=\"#FBC02D\" stroke-width=\"3\" rx=\"12\"/>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 30) 
-        << "\" text-anchor=\"middle\" font-size=\"12\" fill=\"#856404\">Dikkat Dağılması</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 35) 
+        << "\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"#F57F17\">Distractions</text>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 60) 
-        << "\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"bold\" "
-        << "fill=\"#ffc107\">" << distractionCount << "</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 70) 
+        << "\" text-anchor=\"middle\" font-size=\"36\" font-weight=\"bold\" "
+        << "fill=\"#FBC02D\">" << distractionCount << "</text>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 85) 
-        << "\" text-anchor=\"middle\" font-size=\"11\" fill=\"#856404\">kez</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 100) 
+        << "\" text-anchor=\"middle\" font-size=\"12\" fill=\"#F57F17\">times</text>\n";
     
-    // Kutu 2: Longest Distraction
+    // Box 2: Longest Distraction (Red)
     startX += boxWidth + spacing;
     svg << "<rect x=\"" << startX << "\" y=\"" << startY << "\" width=\"" << boxWidth 
-        << "\" height=\"" << boxHeight << "\" fill=\"#f8d7da\" "
-        << "stroke=\"#dc3545\" stroke-width=\"3\" rx=\"10\"/>\n";
+        << "\" height=\"" << boxHeight << "\" fill=\"#FFEBEE\" "
+        << "stroke=\"#E53935\" stroke-width=\"3\" rx=\"12\"/>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 30) 
-        << "\" text-anchor=\"middle\" font-size=\"12\" fill=\"#721c24\">En Uzun Dağılma</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 35) 
+        << "\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"#C62828\">Longest Loss</text>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 60) 
-        << "\" text-anchor=\"middle\" font-size=\"24\" font-weight=\"bold\" "
-        << "fill=\"#dc3545\">" << formatSeconds(longestDistraction) << "</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 70) 
+        << "\" text-anchor=\"middle\" font-size=\"28\" font-weight=\"bold\" "
+        << "fill=\"#E53935\">" << formatSeconds(longestDistraction) << "</text>\n";
     
-    // Kutu 3: Longest Focus
+    // Box 3: Longest Focus (Green)
     startX += boxWidth + spacing;
     svg << "<rect x=\"" << startX << "\" y=\"" << startY << "\" width=\"" << boxWidth 
-        << "\" height=\"" << boxHeight << "\" fill=\"#d4edda\" "
-        << "stroke=\"#28a745\" stroke-width=\"3\" rx=\"10\"/>\n";
+        << "\" height=\"" << boxHeight << "\" fill=\"#E8F5E9\" "
+        << "stroke=\"#43A047\" stroke-width=\"3\" rx=\"12\"/>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 30) 
-        << "\" text-anchor=\"middle\" font-size=\"12\" fill=\"#155724\">En Uzun Odaklanma</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 35) 
+        << "\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"#1B5E20\">Longest Focus</text>\n";
     
-    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 60) 
-        << "\" text-anchor=\"middle\" font-size=\"24\" font-weight=\"bold\" "
-        << "fill=\"#28a745\">" << formatSeconds(longestFocus) << "</text>\n";
+    svg << "<text x=\"" << (startX + boxWidth/2) << "\" y=\"" << (startY + 70) 
+        << "\" text-anchor=\"middle\" font-size=\"28\" font-weight=\"bold\" "
+        << "fill=\"#43A047\">" << formatSeconds(longestFocus) << "</text>\n";
     
     svg << "</svg>";
     output.svgContent = svg.str();

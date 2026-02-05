@@ -21,6 +21,14 @@ void TemplatesPage::setupUI() {
     mainLayout->setContentsMargins(32, 24, 32, 32);
     mainLayout->setSpacing(16);
 
+    // Modern gradient background
+    this->setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     // Header section
     QHBoxLayout *headerLayout = new QHBoxLayout();
     
@@ -55,14 +63,15 @@ void TemplatesPage::setupUI() {
     searchBox->setStyleSheet(
         "QLineEdit { "
         "  background-color: white; "
-        "  border: 1px solid #E0E0E0; "
+        "  border: 2px solid #E8F0F7; "
         "  border-radius: 8px; "
         "  padding: 0 15px; "
         "  font-size: 14px; "
         "  color: #212529; "
         "} "
         "QLineEdit:focus { "
-        "  border: 2px solid #0078D4; "
+        "  border: 2px solid #0288D1; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #FFFFFF, stop:1 #F0F8FF); "
         "}"
     );
     
@@ -83,13 +92,17 @@ void TemplatesPage::setupUI() {
     sortCombo->setStyleSheet(
         "QComboBox { "
         "  background-color: white; "
-        "  border: 1px solid #E0E0E0; "
+        "  border: 2px solid #E8F0F7; "
         "  border-radius: 8px; "
         "  padding: 0 15px; "
         "  font-size: 14px; "
         "} "
         "QComboBox:hover { "
-        "  border: 1px solid #0078D4; "
+        "  border: 2px solid #0288D1; "
+        "} "
+        "QComboBox:focus { "
+        "  border: 2px solid #0288D1; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #FFFFFF, stop:1 #F0F8FF); "
         "} "
         "QComboBox::drop-down { "
         "  border: none; "

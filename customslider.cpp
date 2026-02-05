@@ -32,23 +32,30 @@ void CustomSlider::paintEvent(QPaintEvent *event)
         pos = grooveRect.left();
     }
 
-    // Draw left part (mavi - seçili)
-    painter.fillRect(grooveRect.left(), grooveRect.top(), pos - grooveRect.left() + handleWidth / 2, grooveRect.height(), QColor(0, 120, 212));
+    // Draw left part (mavi gradient - seçili)
+    QLinearGradient gradient(grooveRect.left(), grooveRect.top(), grooveRect.right(), grooveRect.top());
+    gradient.setColorAt(0, QColor(3, 136, 231));      // Cyan-Blue
+    gradient.setColorAt(0.5, QColor(0, 176, 240));    // Light Blue
+    gradient.setColorAt(1, QColor(0, 120, 212));      // Deep Blue
+    painter.fillRect(grooveRect.left(), grooveRect.top(), pos - grooveRect.left() + handleWidth / 2, grooveRect.height(), gradient);
 
-    // Draw right part (beyaz - seçilmemiş)
-    painter.fillRect(pos + handleWidth / 2, grooveRect.top(), grooveRect.right() - (pos + handleWidth / 2), grooveRect.height(), Qt::white);
+    // Draw right part (açık gri - seçilmemiş)
+    painter.fillRect(pos + handleWidth / 2, grooveRect.top(), grooveRect.right() - (pos + handleWidth / 2), grooveRect.height(), QColor(240, 240, 245));
 
     // Draw handle (çember - ÖN PLANA)
     int handleY = grooveRect.top() + grooveRect.height() / 2;
     int handleX = pos + handleWidth / 2;
     
-    // White circle inside
-    painter.setBrush(Qt::white);
+    // Handle gradient
+    QRadialGradient handleGradient(QPoint(handleX, handleY), 10);
+    handleGradient.setColorAt(0, QColor(255, 255, 255));           // White center
+    handleGradient.setColorAt(1, QColor(230, 240, 255));           // Light blue edge
+    painter.setBrush(handleGradient);
     painter.setPen(Qt::NoPen);
     painter.drawEllipse(QPoint(handleX, handleY), 10, 10);
     
-    // Blue border
-    painter.setPen(QPen(QColor(0, 120, 212), 3));
+    // Blue border with shadow
+    painter.setPen(QPen(QColor(0, 150, 230), 2));
     painter.setBrush(Qt::NoBrush);
     painter.drawEllipse(QPoint(handleX, handleY), 10, 10);
 

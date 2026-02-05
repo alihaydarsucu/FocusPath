@@ -22,9 +22,10 @@ void WorkflowCard::setupUI() {
     this->setFixedSize(300, 240);
     this->setStyleSheet(
         "#WorkflowCard { "
-        "  background-color: #FFFFFF; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
         "  border-radius: 16px; "
-        "  border: 1px solid #E8E8E8; "
+        "  border: 2px solid #E8F0F7; "
         "}"
     );
 

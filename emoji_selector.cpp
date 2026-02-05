@@ -23,6 +23,13 @@ EmojiSelector::EmojiSelector(const QString &selectedEmoji, QWidget *parent)
 
 void EmojiSelector::setupUI()
 {
+    setStyleSheet(
+        "QDialog { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(12);
     mainLayout->setContentsMargins(15, 15, 15, 15);
@@ -33,7 +40,17 @@ void EmojiSelector::setupUI()
     searchInput = new QLineEdit(this);
     searchInput->setPlaceholderText("Type to search emojis...");
     searchInput->setStyleSheet(
-        "QLineEdit { border:1px solid #ddd; border-radius:8px; padding:8px; font-size:13px; }"
+        "QLineEdit { "
+        "  border:2px solid #E8F0F7; "
+        "  border-radius:8px; "
+        "  padding:8px; "
+        "  font-size:13px; "
+        "  background: white; "
+        "} "
+        "QLineEdit:focus { "
+        "  border:2px solid #0288D1; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #FFFFFF, stop:1 #F0F8FF); "
+        "}"
     );
     searchLayout->addWidget(searchLabel);
     searchLayout->addWidget(searchInput);
@@ -42,7 +59,13 @@ void EmojiSelector::setupUI()
     // Scrollable emoji grid
     QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
-    scrollArea->setStyleSheet("QScrollArea { border:1px solid #ddd; border-radius:8px; }");
+    scrollArea->setStyleSheet(
+        "QScrollArea { "
+        "  border:2px solid #E8F0F7; "
+        "  border-radius:8px; "
+        "  background: white; "
+        "}"
+    );
 
     emojiContainerWidget = new QWidget();
     emojiGridLayout = new QGridLayout(emojiContainerWidget);
@@ -57,8 +80,17 @@ void EmojiSelector::setupUI()
     buttonLayout->addStretch();
     QPushButton *okButton = new QPushButton("OK", this);
     okButton->setStyleSheet(
-        "QPushButton { background:#0078D4; color:white; border:none; border-radius:6px; padding:8px 20px; font-weight:600; }"
-        "QPushButton:hover { background:#005A9E; }"
+        "QPushButton { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0288D1, stop:1 #0150A8); "
+        "  color:white; "
+        "  border:none; "
+        "  border-radius:6px; "
+        "  padding:8px 20px; "
+        "  font-weight:600; "
+        "} "
+        "QPushButton:hover { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0150A8, stop:1 #001A4D); "
+        "}"
     );
     connect(okButton, &QPushButton::clicked, this, &QDialog::accept);
     buttonLayout->addWidget(okButton);

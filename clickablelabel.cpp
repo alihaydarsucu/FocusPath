@@ -30,9 +30,15 @@ void ClickableLabel::paintEvent(QPaintEvent *event)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
-    QColor accent("#0078d4");
-    p.setPen(QPen(accent, 2));
+    // Modern cyan-blue color with gradient effect
+    QLinearGradient gradient(0, 0, width(), 0);
+    gradient.setColorAt(0, QColor(224, 247, 255));
+    gradient.setColorAt(0.5, QColor(2, 136, 209));
+    gradient.setColorAt(1, QColor(224, 247, 255));
 
-    int y = height() - 1 ;
+    p.setPen(QPen(QColor(2, 136, 209), 3));
+    p.setBrush(gradient);
+
+    int y = height() - 2;
     p.drawLine(0, y, width(), y);
 }

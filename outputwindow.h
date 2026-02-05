@@ -20,7 +20,6 @@ private:
     Workflow *workflow = nullptr;
     std::unique_ptr<Workflow> ownedWorkflow;
     bool hasWorkflow = false;
-    QLabel *nameWorkflow = nullptr;
     QListWidget *appsWorkflow = nullptr;
     WorkflowPage *workflowPage{};
     ResultPage *resultPage{};

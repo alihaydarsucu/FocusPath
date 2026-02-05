@@ -26,6 +26,7 @@ public:
                      const SessionCharts &charts);
 
     void showMessage(const QString &message);
+    void setWorkflowName(const QString &name);
 
 signals:
     void backRequested();
@@ -34,6 +35,7 @@ private:
     void setupUI();
     static QString formatMs(long long ms);
 
+    QLabel *workflowNameLabel{};
     QLabel *statusLabel{};
     QLabel *focusLabel{};
     QLabel *unfocusLabel{};

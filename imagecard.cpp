@@ -15,8 +15,10 @@ ImageCard::ImageCard(QWidget *parent)
     // Style
     setStyleSheet(
         "#imageCard {"
-        "background-color: white;"
-        "border-radius: 16px;"
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
+        "  border-radius: 16px; "
+        "  border: 2px solid #E8F0F7; "
         "}"
         );
 

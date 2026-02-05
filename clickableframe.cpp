@@ -78,14 +78,16 @@ void ClickableFrame::setNormalStyle()
 {
     setStyleSheet(R"(
         QFrame {
-            background-color: #ffffff;
-            border: none;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #FFFFFF, stop:1 #F8FBFD);
+            border: 1px solid #E8F0F7;
             border-radius: 14px;
         }
         QLabel {
             color: #111111;
             font-size: 14px;
             font-weight: 500;
+            background: transparent;
         }
     )");
 }
@@ -95,12 +97,14 @@ void ClickableFrame::setHoverStyle()
 {
     setStyleSheet(R"(
         QFrame {
-            background-color: #f7f9fc;
-            border: none;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #F0F8FF, stop:1 #E0F7FF);
+            border: 2px solid #0288D1;
             border-radius: 14px;
         }
         QLabel {
             color: #000000;
+            background: transparent;
         }
     )");
 }

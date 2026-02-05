@@ -86,13 +86,22 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     rootLayout->setContentsMargins(40, 40, 40, 40);
     rootLayout->setSpacing(20);
 
+    // Modern gradient background
+    this->setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     // Create main card frame
     QFrame *mainCard = new QFrame(this);
     mainCard->setStyleSheet(
         "QFrame { "
-        "background:#ffffff; "
-        "border-radius:20px; "
-        "border:1px solid #e0e0e0; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
+        "  border-radius:20px; "
+        "  border:2px solid #E8F0F7; "
         "}"
     );
 
@@ -113,9 +122,10 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     QFrame *tabFrame = new QFrame();
     tabFrame->setStyleSheet(
         "QFrame { "
-        "background:#ffffff; "
-        "border-bottom:1px solid #e5e7eb; "
-        "border-radius:20px 20px 0px 0px; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
+        "  border-bottom:2px solid #E8F0F7; "
+        "  border-radius:20px 20px 0px 0px; "
         "}"
     );
     QHBoxLayout *tabLayout = new QHBoxLayout(tabFrame);
@@ -125,16 +135,15 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     QPushButton *appSetupTab = new QPushButton("App Setup");
     appSetupTab->setFixedHeight(50);
     appSetupTab->setStyleSheet(
-        "QPushButton { "
-        "background:transparent; "
-        "border:none; "
-        "border-bottom:3px solid #0078d4; "
-        "font-size:14px; "
-        "font-weight:600; "
-        "color:#0078d4; "
-        "padding:0px 20px; "
-        "}"
-        "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+        "  background:transparent; "
+        "  border:none; "
+        "  border-bottom:3px solid #0288D1; "
+        "  font-size:14px; "
+        "  font-weight:600; "
+        "  color:#0288D1; "
+        "  padding:0px 20px; "
+        "} "
+        "QPushButton:hover { color:#0150A8; border-bottom:3px solid #0150A8; }"
     );
     appSetupTab->setFlat(true);
 
@@ -142,13 +151,14 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
     durationSetupTab->setFixedHeight(50);
     durationSetupTab->setStyleSheet(
         "QPushButton { "
-        "background:transparent; "
-        "border:none; "
-        "border-bottom:3px solid transparent; "
-        "font-size:14px; "
-        "font-weight:600; "
-        "color:#9ca3af; "
-        "padding:0px 20px; "
+        "  background:transparent; "
+        "  border:none; "
+        "  border-bottom:3px solid transparent; "
+        "  font-size:14px; "
+        "  font-weight:600; "
+        "  color:#9ca3af; "
+        "  padding:0px 20px; "
+        "} adding:0px 20px; "
         "}"
         "QPushButton:hover { color:#6b7280; }"
     );
@@ -182,26 +192,26 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
         stacked->setCurrentIndex(0);
         appSetupTab->setStyleSheet(
             "QPushButton { "
-            "background:transparent; "
-            "border:none; "
-            "border-bottom:3px solid #0078d4; "
-            "font-size:14px; "
-            "font-weight:600; "
-            "color:#0078d4; "
-            "padding:0px 20px; "
-            "}"
-            "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+            "  background:transparent; "
+            "  border:none; "
+            "  border-bottom:3px solid #0288D1; "
+            "  font-size:14px; "
+            "  font-weight:600; "
+            "  color:#0288D1; "
+            "  padding:0px 20px; "
+            "} "
+            "QPushButton:hover { color:#0150A8; border-bottom:3px solid #0150A8; }"
         );
         durationSetupTab->setStyleSheet(
             "QPushButton { "
-            "background:transparent; "
-            "border:none; "
-            "border-bottom:3px solid transparent; "
-            "font-size:14px; "
-            "font-weight:600; "
-            "color:#9ca3af; "
-            "padding:0px 20px; "
-            "}"
+            "  background:transparent; "
+            "  border:none; "
+            "  border-bottom:3px solid transparent; "
+            "  font-size:14px; "
+            "  font-weight:600; "
+            "  color:#9ca3af; "
+            "  padding:0px 20px; "
+            "} "
             "QPushButton:hover { color:#6b7280; }"
         );
     });
@@ -210,27 +220,27 @@ WorkflowSetupPage::WorkflowSetupPage(QWidget *parent)
         stacked->setCurrentIndex(1);
         appSetupTab->setStyleSheet(
             "QPushButton { "
-            "background:transparent; "
-            "border:none; "
-            "border-bottom:3px solid transparent; "
-            "font-size:14px; "
-            "font-weight:600; "
-            "color:#9ca3af; "
-            "padding:0px 20px; "
-            "}"
+            "  background:transparent; "
+            "  border:none; "
+            "  border-bottom:3px solid transparent; "
+            "  font-size:14px; "
+            "  font-weight:600; "
+            "  color:#9ca3af; "
+            "  padding:0px 20px; "
+            "} "
             "QPushButton:hover { color:#6b7280; }"
         );
         durationSetupTab->setStyleSheet(
             "QPushButton { "
-            "background:transparent; "
-            "border:none; "
-            "border-bottom:3px solid #0078d4; "
-            "font-size:14px; "
-            "font-weight:600; "
-            "color:#0078d4; "
-            "padding:0px 20px; "
-            "}"
-            "QPushButton:hover { color:#005a9e; border-bottom:3px solid #005a9e; }"
+            "  background:transparent; "
+            "  border:none; "
+            "  border-bottom:3px solid #0288D1; "
+            "  font-size:14px; "
+            "  font-weight:600; "
+            "  color:#0288D1; "
+            "  padding:0px 20px; "
+            "} "
+            "QPushButton:hover { color:#0150A8; border-bottom:3px solid #0150A8; }"
         );
     });
 

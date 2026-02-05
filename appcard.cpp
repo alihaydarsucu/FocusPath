@@ -47,11 +47,15 @@ AppCard::AppCard(const QString& appName, const QIcon& icon, QWidget* parent)
 
     setStyleSheet(R"(
         QFrame#AppCard {
-            background-color: #ffffff;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #FFFFFF, stop:1 #F8FBFD);
             border-radius: 12px;
+            border: 1px solid #E8F0F7;
         }
         QFrame#AppCard:hover {
-            background-color: #f3f3f3;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #F0F8FF, stop:1 #E0F7FF);
+            border: 2px solid #0288D1;
         }
     )");
 

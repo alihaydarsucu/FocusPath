@@ -17,26 +17,20 @@
 OutputWindow::OutputWindow(QWidget *parent)
     : QWidget(parent)
 {
+    // Modern gradient arkaplan
+    this->setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->setSpacing(0);
 
 
-    QWidget *topWidget = new QWidget(this);
-    QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
 
-    QLabel *title = new QLabel("FOCUS PATH", this);
-    title->setStyleSheet("font-size:20px; font-weight:600;");
-    topLayout->addSpacing(10);
-    topLayout->addWidget(title);
-
-    nameWorkflow = new QLabel("-", this);
-    topLayout->addWidget(nameWorkflow);
-
-    QFrame *line = new QFrame(this);
-    line->setFrameShape(QFrame::HLine);
-    line->setFixedHeight(1);
-    line->setStyleSheet("background:#F8F9FA;");
 
 
 
@@ -55,8 +49,6 @@ OutputWindow::OutputWindow(QWidget *parent)
         stacked->setCurrentWidget(workflowPage);
         emit backToDashboardRequested();
     });
-    mainLayout->addWidget(topWidget);
-    mainLayout->addWidget(line);
     mainLayout->addWidget(stacked,1);
 
     logsDir = QCoreApplication::applicationDirPath() + "/logs";
@@ -67,9 +59,6 @@ void OutputWindow::onWorkflowReady(Workflow &workflow)
     ownedWorkflow.reset();
     this->workflow = &workflow;
     workflowPage->getWorkflow(workflow);
-    nameWorkflow->setText(
-        QString::fromStdString(workflow.getName())
-        );
 
     qDebug() << workflow.getName().c_str();
     qInfo() << workflow.getDuration();
@@ -152,6 +141,8 @@ void OutputWindow::loadResultsForCurrentWorkflow()
         resultPage->showMessage("Workflow data missing; results unavailable.");
         return;
     }
+
+    resultPage->setWorkflowName(QString::fromStdString(workflow->getName()));
 
     const QString logFile = findLogForWorkflow(*workflow);
     if (logFile.isEmpty()) {
@@ -245,7 +236,7 @@ void OutputWindow::showReportForWorkflow(const Workflow &wf)
 {
     ownedWorkflow = std::make_unique<Workflow>(wf);
     workflow = ownedWorkflow.get();
-    nameWorkflow->setText(QString::fromStdString(workflow->getName()));
+    resultPage->setWorkflowName(QString::fromStdString(workflow->getName()));
 
     qDebug() << "[OutputWindow] Showing report for workflow" << QString::fromStdString(workflow->getName());
     loadResultsForCurrentWorkflow();

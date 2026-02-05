@@ -18,9 +18,10 @@ void FocusCard::setupUI(int width, int height) {
 
     this->setStyleSheet(
         "#FocusCard { "
-        "  background-color: #FFFFFF; "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
         "  border-radius: 24px; "
-        "  border: 1px solid #F0F0F0; "
+        "  border: 2px solid #E8F0F7; "
         "}"
         );
 
@@ -39,7 +40,7 @@ void FocusCard::setupUI(int width, int height) {
 
     iconCircle = new QFrame();
     iconCircle->setFixedSize(48, 48);
-    iconCircle->setStyleSheet("background-color: #EBF5F9; border-radius: 14px;");
+    iconCircle->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #E3F2FF, stop:1 #E0F7FF); border-radius: 14px;");
 
     iconLabel = new QLabel(iconCircle);
     iconLabel->setAlignment(Qt::AlignCenter);
@@ -53,7 +54,8 @@ void FocusCard::setupUI(int width, int height) {
     statusBadge->setAlignment(Qt::AlignCenter);
     statusBadge->setContentsMargins(10, 4, 10, 4);
     statusBadge->setStyleSheet(
-        "background-color: #F0FAF5; color: #1A7F50; "
+        "background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #E0F7FA, stop:1 #B2EBF2); "
+        "color: #00796B; "
         "font-weight: bold; font-size: 10px; border-radius: 8px;"
         );
 
@@ -100,12 +102,22 @@ void FocusCard::mousePressEvent(QMouseEvent *event) {
 
 void FocusCard::enterEvent(QEnterEvent *event) {
     this->setStyleSheet(
-        "#FocusCard { background-color: #FAFAFA; border-radius: 24px; border: 1px solid #006692; }"
+        "#FocusCard { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #F0F8FF, stop:1 #E0F7FF); "
+        "  border-radius: 24px; "
+        "  border: 2px solid #0288D1; "
+        "}"
         );
 }
 
 void FocusCard::leaveEvent(QEvent *event) {
     this->setStyleSheet(
-        "#FocusCard { background-color: #FFFFFF; border-radius: 24px; border: 1px solid #F0F0F0; }"
+        "#FocusCard { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FFFFFF, stop:1 #F8FBFD); "
+        "  border-radius: 24px; "
+        "  border: 2px solid #E8F0F7; "
+        "}"
         );
 }

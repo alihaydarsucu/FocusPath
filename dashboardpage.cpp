@@ -7,6 +7,14 @@
 DashboardPage::DashboardPage(QWidget *parent)
     : QWidget(parent)
 {
+    // Set gradient background
+    this->setStyleSheet(
+        "QWidget { "
+        "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "
+        "    stop:0 #FAFBFF, stop:0.5 #F0F6FF, stop:1 #E8F4FF); "
+        "}"
+    );
+
     QGridLayout *bottomLayout = new QGridLayout(this);
     bottomLayout->setSpacing(40);
     bottomLayout->setContentsMargins(170, 50, 170, 50);
