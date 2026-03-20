@@ -262,7 +262,7 @@ QColor WorkflowCard::getColorForWorkflow(const QString &name) {
     return defaultColors[hash % colorCount];
 }
 
-void WorkflowCard::enterEvent(QEnterEvent *event) {
+void WorkflowCard::enterEvent(QEvent *event) {
     this->setStyleSheet(
         "#WorkflowCard { "
         "  background-color: #FFFFFF; "

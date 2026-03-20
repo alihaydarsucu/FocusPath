@@ -10,7 +10,7 @@
 #include "attention_analyzer.hpp"
 #include "GraphicGenerator_header_and_structs.h"
 
-#include <QtSvgWidgets/QSvgWidget>
+#include <QtSvg/QSvgWidget>
 
 class ResultPage : public QWidget
 {

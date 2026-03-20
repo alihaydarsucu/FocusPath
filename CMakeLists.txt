@@ -14,8 +14,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg SvgWidgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg SvgWidgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg)
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS SvgWidgets)
+endif()
 
 # ================== X11 ==================
 find_package(X11 REQUIRED)
@@ -128,9 +131,11 @@ target_include_directories(fp_project1 PRIVATE
 target_link_libraries(fp_project1 PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Svg
-    Qt${QT_VERSION_MAJOR}::SvgWidgets
     ${X11_LIBRARIES}
 )
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
+    target_link_libraries(fp_project1 PRIVATE Qt${QT_VERSION_MAJOR}::SvgWidgets)
+endif()
 
 # ================== INSTALL ==================
 include(GNUInstallDirs)

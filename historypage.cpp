@@ -13,7 +13,7 @@
 #include <QFrame>
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
-#include <QtSvgWidgets/QSvgWidget>
+#include <QtSvg/QSvgWidget>
 #include <QRandomGenerator>
 #include <algorithm>
 

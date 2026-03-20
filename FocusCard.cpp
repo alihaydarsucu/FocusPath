@@ -100,7 +100,7 @@ void FocusCard::mousePressEvent(QMouseEvent *event) {
     QFrame::mousePressEvent(event);
 }
 
-void FocusCard::enterEvent(QEnterEvent *event) {
+void FocusCard::enterEvent(QEvent *event) {
     this->setStyleSheet(
         "#FocusCard { "
         "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, "

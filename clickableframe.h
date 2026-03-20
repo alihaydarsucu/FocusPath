@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QMouseEvent>
-#include <QEnterEvent>
+#include <QEvent>
 
 class ClickableFrame : public QFrame {
     Q_OBJECT
@@ -22,7 +22,7 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
-    void enterEvent(QEnterEvent* event) override;
+    void enterEvent(QEvent* event) override;
     void leaveEvent(QEvent* event) override;
 
 private:

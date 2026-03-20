@@ -61,7 +61,7 @@ void ClickableFrame::mousePressEvent(QMouseEvent* event)
     QFrame::mousePressEvent(event);
 }
 
-void ClickableFrame::enterEvent(QEnterEvent*)
+void ClickableFrame::enterEvent(QEvent*)
 {
     qDebug() << "[ClickableFrame] Hover in" << titleLabel->text();
     setHoverStyle();

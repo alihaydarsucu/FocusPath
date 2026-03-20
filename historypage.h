@@ -11,7 +11,7 @@
 #include <QVector>
 #include <QHash>
 #include <QDate>
-#include <QtSvgWidgets/QSvgWidget>
+#include <QtSvg/QSvgWidget>
 #include <memory>
 #include "workflow.h"
 

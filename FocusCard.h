@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include <QGraphicsDropShadowEffect>
 #include <QMouseEvent>
-#include <QEnterEvent>
+#include <QEvent>
 #include <QPixmap>
 
 class FocusCard : public QFrame {
@@ -24,7 +24,7 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
-    void enterEvent(QEnterEvent *event) override;
+    void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
 private:
