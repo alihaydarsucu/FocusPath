@@ -32,14 +32,14 @@ public:
 
     Workflow(std::string name, long duration, bool isFavorite);
 
-    void addApps(std::string appName);
+    void addApp(std::string appName);
 
     void print() const;
 
     std::string getName() const;
     std::string getDate() const;
     long getDuration() const;
-    bool getisFavorite() const ;
+    bool getIsFavorite() const ;
     std::string getIcon() const;
     const std::vector<std::string>& getApps() const ;
     void setDate(const std::string &d);

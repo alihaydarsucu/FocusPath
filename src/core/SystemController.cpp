@@ -1,4 +1,4 @@
-#include "system_controller.hpp"
+#include "SystemController.hpp"
 
 SystemController::SystemController(const QString& logDir, QObject* parent)
     : QObject(parent)

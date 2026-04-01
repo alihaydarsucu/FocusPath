@@ -1,4 +1,4 @@
-#include "window_tracker.hpp"
+#include "WindowTracker.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -54,9 +54,9 @@ WindowTracker::WindowTracker(const std::string& logDir)
 
     current = getActiveWindow();
     if (current != 0)
-        current_title = getWindowTitle(current);
+        currentTitle = getWindowTitle(current);
     else
-        current_title = "unknown";
+        currentTitle = "unknown";
 }
 
 WindowTracker::~WindowTracker() {
@@ -87,23 +87,23 @@ void WindowTracker::tick() {
                       now - lastSwitch
                       ).count();
 
-        logWindow(current, ms, current_title);
+        logWindow(current, ms, currentTitle);
         current = w;
-        current_title = getWindowTitle(current);
+        currentTitle = getWindowTitle(current);
         lastSwitch = now;
         return;
     }
 
     // 2️ Title change
     std::string title = getWindowTitle(current);
-    if (title != current_title) {
+    if (title != currentTitle) {
         long ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                       now - lastSwitch
                       ).count();
 
-        logWindow(current, ms, current_title);
+        logWindow(current, ms, currentTitle);
 
-        current_title = title;
+        currentTitle = title;
         lastSwitch = now;
     }
 }

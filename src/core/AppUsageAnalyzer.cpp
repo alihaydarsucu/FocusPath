@@ -1,4 +1,4 @@
-#include "app_usage_analyzer.hpp"
+#include "AppUsageAnalyzer.hpp"
 
 AppUsageAnalyzer::AppUsageAnalyzer(
     const UsageMap& usage,

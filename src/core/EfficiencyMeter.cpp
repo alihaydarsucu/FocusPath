@@ -1,4 +1,4 @@
-#include "efficiency_meter.hpp"
+#include "EfficiencyMeter.hpp"
 
 EfficiencyMeter::EfficiencyMeter(
     const std::string& logFile,
@@ -12,7 +12,7 @@ EfficiencyMeter::EfficiencyMeter(
 void EfficiencyMeter::analyze() {
     // App usage
     AppUsageAnalyzer usageAnalyzer(
-        parser.totals_by_app(),
+        parser.totalsByApp(),
         trackedApps
     );
     appUsageResult = usageAnalyzer.analyze();
@@ -37,7 +37,7 @@ EfficiencyMeter::attention() const {
 
 const std::unordered_map<std::string, long long>&
 EfficiencyMeter::totalsByApp() const {
-    return parser.totals_by_app();
+    return parser.totalsByApp();
 }
 
 const std::vector<WindowEvent>&

@@ -6,16 +6,16 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
-#include "log_parser.hpp"
+#include "LogParser.hpp"
 
 
 class AttentionAnalyzer {
 public:
 
     struct AttentionStats {
-    int distraction_count = 0;
-    long long longest_distraction_ms = 0;
-    long long longest_focus__ms = 0;
+        int distractionCount = 0;
+        long long longestDistractionMs = 0;
+        long long longestFocusMs = 0;
     };
 
     AttentionAnalyzer(

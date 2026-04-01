@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <memory>
 
-#include "system_handler.hpp"
+#include "SystemHandler.hpp"
 
 class SystemController : public QObject {
     Q_OBJECT

@@ -1,7 +1,7 @@
 #ifndef SYSTEM_HANDLER_HPP
 #define SYSTEM_HANDLER_HPP
 
-#include "window_tracker.hpp"
+#include "WindowTracker.hpp"
 #include <memory>
 
 class SystemHandler {

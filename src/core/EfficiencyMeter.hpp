@@ -1,9 +1,9 @@
 #ifndef EFFICIENCY_METER_HPP
 #define EFFICIENCY_METER_HPP
 
-#include "log_parser.hpp"
-#include "app_usage_analyzer.hpp"
-#include "attention_analyzer.hpp"
+#include "LogParser.hpp"
+#include "AppUsageAnalyzer.hpp"
+#include "AttentionAnalyzer.hpp"
 #include <string>
 #include <vector>
 
@@ -32,7 +32,7 @@ private:
     std::vector<std::string> trackedApps;
 
     // Core components
-    WindowUsageParser parser;
+    LogParser parser;
 
     // Results
     AppUsageAnalyzer::AppUsageResult appUsageResult{};

@@ -30,7 +30,7 @@ private:
     Atom atomUtf8;
 
     Window current;
-    std::string current_title;
+    std::string currentTitle;
     std::chrono::steady_clock::time_point lastSwitch;
     std::ofstream out;
 };

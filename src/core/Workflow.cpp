@@ -1,4 +1,4 @@
-#include "workflow.h"
+#include "Workflow.h"
 #include <ctime>
 #include <iostream>
 
@@ -34,7 +34,7 @@ Workflow::Workflow(std::string name, long duration, bool isFavorite)
     setCurrentDateTime();
 }
 
-void Workflow::addApps(std::string appName)
+void Workflow::addApp(std::string appName)
 {
     apps.push_back(appName);
 }
@@ -53,7 +53,7 @@ std::string Workflow::getName() const
     return name;
 }
 
-bool Workflow::getisFavorite() const {
+bool Workflow::getIsFavorite() const {
     return isFavorite;
 }
 
@@ -88,7 +88,7 @@ QJsonObject workflowToJson(const Workflow &wf) {
     QJsonObject obj;
     obj["name"] = QString::fromStdString(wf.getName());
     obj["duration"] = static_cast<qint64>(wf.getDuration());
-    obj["isFavorite"] = wf.getisFavorite();
+    obj["isFavorite"] = wf.getIsFavorite();
     obj["date"] = QString::fromStdString(wf.getDate());
     if (!wf.getIcon().empty()) {
         obj["icon"] = QString::fromStdString(wf.getIcon());
@@ -144,7 +144,7 @@ Workflow Workflow::loadWorkflowFromFile(const QString &filePath) {
 
     QJsonArray appsArray = obj["apps"].toArray();
     for (const auto &val : appsArray) {
-        wf.addApps(val.toString().toStdString());
+        wf.addApp(val.toString().toStdString());
     }
 
     return wf;
