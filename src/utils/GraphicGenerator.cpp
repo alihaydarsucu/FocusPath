@@ -1,4 +1,4 @@
-#include "GraphicGenerator_header_and_structs.h"
+#include "GraphicGeneratorStructs.h"
 
 #include <QDebug>
 #include <cmath>
