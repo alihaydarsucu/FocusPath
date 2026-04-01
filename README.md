@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="pictures/FocusPath.png" alt="FocusPath logo" width="600" />
+  <img src="pictures/FocusPath.png" alt="FocusPath logo" width="350" />
 </p>
 
 # FocusPath
