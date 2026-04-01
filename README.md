@@ -1,68 +1,57 @@
-# FocusPath
 <p align="center">
-  <img src="pictures/FocusPath.png" alt="FocusPath logo" width="200" />
+  <img src="pictures/FocusPath.png" alt="FocusPath logo" width="600" />
 </p>
 
-Measure how focused you stay by comparing the apps you intended to use with the ones you actually used. FocusPath records every active window change, highlights distraction streaks, and renders SVG charts so you can review your sessions after they end.
+# FocusPath
 
-🎥 Presentation video: https://youtu.be/2Ad7iqPG2-s
+FocusPath is a desktop utility designed to help you track your productivity by comparing your intended application usage with your actual focus. It monitors active window transitions on X11, identifies distraction streaks, and generates detailed SVG-based visual reports.
 
-## ✨ Features
-- 📋 **Workflow planning**: pick whitelisted apps, set a duration, and label the session with an emoji.
-- 🔍 **Live tracking on X11**: the active window and title are logged every 200 ms whenever focus or title changes.
-- 📊 **Analysis pipeline**: parses JSONL window logs, measures time on allowed vs unlisted apps, and detects distraction streaks.
-- 📈 **Reporting**: generates SVG charts (usage table, timeline, pie, attention box) and displays them in-app; files are saved for later.
-- 🗂️ **History and templates**: reuse prior workflows or start from saved templates.
+🎥 **Watch the presentation:** [YouTube Link](https://youtu.be/2Ad7iqPG2-s)
 
-## 📦 Requirements
-- Linux with X11 (window tracking uses X11 APIs).
-- Qt 5.15+ or Qt 6 (Widgets, Svg, SvgWidgets modules).
-- CMake 3.16+ and a C++17 compiler.
-- X11 development headers.
-- nlohmann-json single-header library available to the compiler (included by your system package or placed in include paths).
+---
 
-## 🚀 Build and Run
+### Key Capabilities
+- **Workflow Planning:** Whitelist specific applications for a session, set your target duration, and tag it with an emoji.
+- **Real-time X11 Tracking:** Monitors focus changes and window titles every 200ms to build an accurate activity log.
+- **Data Analysis:** Process raw JSONL logs to calculate time spent on productive vs. unproductive tasks.
+- **Visual Reporting:** Automatically generates SVG charts (Timeline, Pie Chart, Usage Table) for every session.
+- **History & Templates:** Save your favorite setups as templates and review past productivity trends.
+
+### Prerequisites
+- **OS:** Linux with X11 (Wayland is not currently supported for window tracking).
+- **Framework:** Qt 5.15+ or Qt 6 (Widgets and SVG modules).
+- **Build Tools:** CMake 3.16+ and a C++17 compatible compiler.
+- **Dependencies:** X11 development headers and `nlohmann-json`.
+
+### Build & Installation
 ```bash
 git clone <repo-url>
-cd fp_project1
+cd FocusPath
 cmake -S . -B build
 cmake --build build
 ./build/fp_project1
 ```
-If Qt is not in your default CMake paths, pass `-DCMAKE_PREFIX_PATH=/path/to/Qt` when running the first cmake command.
+*Note: If Qt is installed in a non-standard location, use `-DCMAKE_PREFIX_PATH` during the configuration step.*
 
-## 💡 Using FocusPath
-1) Start the app. The `logs/` folder is created beside the binary.
-2) Go to **Workflow Setup**:
-   - Search and add the apps you want to whitelist (allowed focus apps).
-   - Move to **Duration Setup**, name the workflow, choose an emoji, and set the session length.
-3) Click **Start Tracking**. The Workflow page appears while the tracker writes JSONL events.
-4) When you complete the workflow, the Result page opens automatically with charts. You can also revisit past runs via **History** or **Templates**.
+### How to Use
+1. **Initialize:** Run the application. It will create `logs/` and `workflows/` directories automatically.
+2. **Setup:** Open the **Workflow Setup** page, search for the apps you want to use, and finalize your session parameters (name, emoji, time).
+3. **Focus:** Click **Start Tracking**. The app will minimize/background and begin logging your X11 activity.
+4. **Review:** Once the timer ends, the **Result** page will display your performance charts.
 
-## 💾 Where Data Is Stored
-- **Window logs**: `logs/window_log_YYYY-MM-DD_HH-MM.jsonl` (JSON Lines). Example:
-  ```json
-  {"window_id": 123456, "window_class": "code", "window_title": "main.cpp – FocusPath", "duration_ms": 8421, "ended_at": 1735729200}
-  ```
-- **Generated charts**: `results/<workflow_date>_*.svg` (usage table, timeline, pie, attention stats).
-- **Saved workflows/templates**: `workflows/*.json` (created via the UI pages).
+### Data & Architecture
+- **Logs:** Saved as `.jsonl` files in `logs/`. Each entry includes window ID, class, title, and duration.
+- **Charts:** SVG files are stored in `results/` for later review.
+- **Engine:**
+    - `SystemController` & `SystemHandler`: Orchestrates the 200ms tick loop.
+    - `WindowTracker`: Direct interface with X11 for focus capture.
+    - `EfficiencyMeter`: High-level orchestrator for the analysis pipeline.
+    - `LogParser` & `AttentionAnalyzer`: Core logic for turning raw logs into metrics.
 
-## ⚙️ How It Works (brief)
-- `SystemController` drives a `SystemHandler` ticking every 200 ms, which delegates to `WindowTracker` to capture the active X11 window and title changes.
-- `WindowTracker` appends JSONL entries whenever focus or title changes.
-- `EfficiencyMeter` reads a selected log file, aggregates usage per window class, and runs `AppUsageAnalyzer` and `AttentionAnalyzer` to compute focus vs distraction metrics.
-- `GraphicGenerator` renders charts consumed by the Result page.
+### Troubleshooting
+- **Missing Charts:** Ensure your workflow timeframe matches the generated log files.
+- **No Data in Logs:** Verify you are running an X11 session. Wayland environments do not allow standard X11 focus tracking.
+- **Build Errors:** Ensure all Qt SVG modules are installed (e.g., `libqt5svg5-dev` or `qt6-svg-dev`).
 
-## 🔧 Troubleshooting
-- **No charts appear**: ensure the workflow date matches a log file; the app falls back to the nearest log but needs at least one entry.
-- **Empty log files**: confirm you are on X11 (not Wayland) and that the app has permission to read window info.
-- **Qt not found**: pass `-DCMAKE_PREFIX_PATH` to CMake or source your Qt environment script.
-
-## 📄 License
-This project is licensed under the terms of the LICENSE file in the repository.
-
-## 👥 Contributors
-- [Ali Haydar Sucu](https://github.com/alihaydarsucu)
-- [Alpdoğan Kurt](https://github.com/AlpdoganK)
-- [Fatih Şenal](https://github.com/MFSenal)
-- [Burak Semih Bileci](https://github.com/BurakBileci)
+### License
+Distributed under the terms found in the [LICENSE](LICENSE) file.
