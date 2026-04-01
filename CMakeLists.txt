@@ -25,88 +25,88 @@ find_package(X11 REQUIRED)
 
 # ================== SOURCES ==================
 set(PROJECT_SOURCES
-    main.cpp
+    src/main.cpp
 
-    mainwindow.cpp
-    mainwindow.h
+    src/ui/MainWindow.cpp
+    src/ui/MainWindow.h
 
-    clickablelabel.cpp
-    clickablelabel.h
+    src/ui/ClickableLabel.cpp
+    src/ui/ClickableLabel.h
 
-    FocusCard.cpp
-    FocusCard.h
+    src/ui/FocusCard.cpp
+    src/ui/FocusCard.h
 
-    appcard.cpp
-    appcard.h
+    src/ui/AppCard.cpp
+    src/ui/AppCard.h
 
-    clickableframe.cpp
-    clickableframe.h
+    src/ui/ClickableFrame.cpp
+    src/ui/ClickableFrame.h
 
-    countdownwidget.cpp
-    countdownwidget.h
+    src/ui/CountdownWidget.cpp
+    src/ui/CountdownWidget.h
 
-    imagecard.cpp
-    imagecard.h
+    src/ui/ImageCard.cpp
+    src/ui/ImageCard.h
 
-    dashboardpage.cpp
-    dashboardpage.h
+    src/ui/DashboardPage.cpp
+    src/ui/DashboardPage.h
 
-    workflowsetuppage.cpp
-    workflowsetuppage.h
+    src/ui/WorkflowSetupPage.cpp
+    src/ui/WorkflowSetupPage.h
 
-    customslider.cpp
-    customslider.h
+    src/ui/CustomSlider.cpp
+    src/ui/CustomSlider.h
 
-    emoji_selector.cpp
-    emoji_selector.h
+    src/ui/EmojiSelector.cpp
+    src/ui/EmojiSelector.h
 
-    workflow.cpp
-    workflow.h
+    src/core/Workflow.cpp
+    src/core/Workflow.h
 
-    window_tracker.cpp
-    window_tracker.hpp
+    src/core/WindowTracker.cpp
+    src/core/WindowTracker.hpp
 
-    log_parser.cpp
-    log_parser.hpp
+    src/core/LogParser.cpp
+    src/core/LogParser.hpp
 
-    attention_analyzer.cpp
-    attention_analyzer.hpp
+    src/core/AttentionAnalyzer.cpp
+    src/core/AttentionAnalyzer.hpp
 
-    app_usage_analyzer.cpp
-    app_usage_analyzer.hpp
+    src/core/AppUsageAnalyzer.cpp
+    src/core/AppUsageAnalyzer.hpp
 
-    system_handler.cpp
-    system_handler.hpp
+    src/core/SystemHandler.cpp
+    src/core/SystemHandler.hpp
 
-    efficiency_meter.cpp
-    efficiency_meter.hpp
+    src/core/EfficiencyMeter.cpp
+    src/core/EfficiencyMeter.hpp
 
-    GraphicGenerator.cpp
-    GraphicGenerator_header_and_structs.h
+    src/utils/GraphicGenerator.cpp
+    src/utils/GraphicGeneratorStructs.h
 
-    system_controller.cpp
-    system_controller.hpp
+    src/core/SystemController.cpp
+    src/core/SystemController.hpp
 
-    inputwindow.cpp
-    inputwindow.h
+    src/ui/InputWindow.cpp
+    src/ui/InputWindow.h
 
-    outputwindow.cpp
-    outputwindow.h
+    src/ui/OutputWindow.cpp
+    src/ui/OutputWindow.h
 
-    workflowpage.cpp
-    workflowpage.h
+    src/ui/WorkflowPage.cpp
+    src/ui/WorkflowPage.h
 
-    resultpage.cpp
-    resultpage.h
+    src/ui/ResultPage.cpp
+    src/ui/ResultPage.h
 
-    templatespage.cpp
-    templatespage.h
+    src/ui/TemplatesPage.cpp
+    src/ui/TemplatesPage.h
 
-    historypage.cpp
-    historypage.h
+    src/ui/HistoryPage.cpp
+    src/ui/HistoryPage.h
 
-    WorkflowCard.cpp
-    WorkflowCard.h
+    src/ui/WorkflowCard.cpp
+    src/ui/WorkflowCard.h
 
     resources.qrc
 )
@@ -124,6 +124,10 @@ endif()
 
 # ================== INCLUDE ==================
 target_include_directories(fp_project1 PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
     ${X11_INCLUDE_DIR}
 )
 
