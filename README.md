@@ -25,11 +25,11 @@ FocusPath is a desktop utility designed to help you track your productivity by c
 
 ### Build & Installation
 ```bash
-git clone <repo-url>
+git clone https://github.com/alihaydarsucu/FocusPath
 cd FocusPath
 cmake -S . -B build
 cmake --build build
-./build/fp_project1
+./build/focuspath
 ```
 *Note: If Qt is installed in a non-standard location, use `-DCMAKE_PREFIX_PATH` during the configuration step.*
 
