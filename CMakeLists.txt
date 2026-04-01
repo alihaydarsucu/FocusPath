@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(fp_project1 VERSION 0.1 LANGUAGES CXX)
+project(focuspath VERSION 0.1 LANGUAGES CXX)
 
 # ================== C++ ==================
 set(CMAKE_CXX_STANDARD 17)
@@ -113,17 +113,17 @@ set(PROJECT_SOURCES
 
 # ================== EXECUTABLE ==================
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    qt_add_executable(fp_project1
+    qt_add_executable(focuspath
         ${PROJECT_SOURCES}
     )
 else()
-    add_executable(fp_project1
+    add_executable(focuspath
         ${PROJECT_SOURCES}
     )
 endif()
 
 # ================== INCLUDE ==================
-target_include_directories(fp_project1 PRIVATE
+target_include_directories(focuspath PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
@@ -132,17 +132,17 @@ target_include_directories(fp_project1 PRIVATE
 )
 
 # ================== LINK ==================
-target_link_libraries(fp_project1 PRIVATE
+target_link_libraries(focuspath PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Svg
     ${X11_LIBRARIES}
 )
 if(QT_VERSION_MAJOR GREATER_EQUAL 6)
-    target_link_libraries(fp_project1 PRIVATE Qt${QT_VERSION_MAJOR}::SvgWidgets)
+    target_link_libraries(focuspath PRIVATE Qt${QT_VERSION_MAJOR}::SvgWidgets)
 endif()
 
 # ================== INSTALL ==================
 include(GNUInstallDirs)
-install(TARGETS fp_project1
+install(TARGETS focuspath
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
