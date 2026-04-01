@@ -6,9 +6,9 @@
 #include <vector>
 #include <string>
 
-#include "app_usage_analyzer.hpp"
-#include "attention_analyzer.hpp"
-#include "GraphicGenerator_header_and_structs.h"
+#include "AppUsageAnalyzer.hpp"
+#include "AttentionAnalyzer.hpp"
+#include "GraphicGeneratorStructs.h"
 
 #include <QtSvg/QSvgWidget>
 

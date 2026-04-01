@@ -1,7 +1,7 @@
-#include "resultpage.h"
+#include "ResultPage.h"
 
 #include <QFormLayout>
-#include "resultpage.h"
+#include "ResultPage.h"
 
 #include <QGridLayout>
 #include <QGroupBox>
@@ -244,9 +244,9 @@ void ResultPage::showResults(const AppUsageAnalyzer::AppUsageResult &usage,
     unfocusLabel->setText(formatMs(usage.unlistedTime));
     focusPercentLabel->setText(QString::number(usage.listedPercent, 'f', 1) + "%");
     distractPercentLabel->setText(QString::number(usage.unlistedPercent, 'f', 1) + "%");
-    distractionCountLabel->setText(QString::number(attention.distraction_count));
-    longestFocusLabel->setText(formatMs(attention.longest_focus__ms));
-    longestDistractLabel->setText(formatMs(attention.longest_distraction_ms));
+    distractionCountLabel->setText(QString::number(attention.distractionCount));
+    longestFocusLabel->setText(formatMs(attention.longestFocusMs));
+    longestDistractLabel->setText(formatMs(attention.longestDistractionMs));
 
     QStringList apps;
     for (const auto &a : trackedApps) {

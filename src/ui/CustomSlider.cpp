@@ -1,4 +1,4 @@
-#include "customslider.h"
+#include "CustomSlider.h"
 #include <QPainter>
 #include <QStyleOptionSlider>
 #include <cmath>

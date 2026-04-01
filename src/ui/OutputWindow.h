@@ -1,16 +1,16 @@
 
 #pragma once
 #include <QWidget>
-#include "workflow.h"
-#include "workflowpage.h"
-#include "resultpage.h"
+#include "Workflow.h"
+#include "WorkflowPage.h"
+#include "ResultPage.h"
 #include <QLabel>
 #include <QListWidget>
 #include <QStackedWidget>
 #include <QString>
 
-#include "GraphicGenerator_header_and_structs.h"
-#include "efficiency_meter.hpp"
+#include "GraphicGeneratorStructs.h"
+#include "EfficiencyMeter.hpp"
 
 class OutputWindow : public QWidget {
     Q_OBJECT

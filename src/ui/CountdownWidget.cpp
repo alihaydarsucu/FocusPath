@@ -1,4 +1,4 @@
-#include "countdownwidget.h"
+#include "CountdownWidget.h"
 
 #include <QDebug>
 #include <QVBoxLayout>

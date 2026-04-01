@@ -1,7 +1,7 @@
-#include "dashboardpage.h"
+#include "DashboardPage.h"
 #include <QGridLayout>
 #include "FocusCard.h"
-#include "imagecard.h"
+#include "ImageCard.h"
 
 
 DashboardPage::DashboardPage(QWidget *parent)

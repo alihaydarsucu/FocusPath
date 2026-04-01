@@ -8,7 +8,7 @@
 #include <QHBoxLayout>
 #include <QString>
 #include <QStringList>
-#include "workflow.h"
+#include "Workflow.h"
 
 class WorkflowCard : public QFrame {
     Q_OBJECT

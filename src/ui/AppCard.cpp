@@ -1,4 +1,4 @@
-#include "appcard.h"
+#include "AppCard.h"
 
 #include <QMouseEvent>
 #include <QLabel>

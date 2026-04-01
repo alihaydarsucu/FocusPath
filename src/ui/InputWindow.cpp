@@ -1,10 +1,10 @@
-#include "inputwindow.h"
+#include "InputWindow.h"
 
-#include "clickablelabel.h"
-#include "dashboardpage.h"
-#include "workflowsetuppage.h"
-#include "historypage.h"
-#include "templatespage.h"
+#include "ClickableLabel.h"
+#include "DashboardPage.h"
+#include "WorkflowSetupPage.h"
+#include "HistoryPage.h"
+#include "TemplatesPage.h"
 
 #include <QDebug>
 #include <QVBoxLayout>

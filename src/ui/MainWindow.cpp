@@ -1,5 +1,5 @@
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include <QCoreApplication>
 #include <QDir>
 

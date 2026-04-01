@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
 #include <QString>
-#include "workflow.h"
+#include "Workflow.h"
 #include <QWidget>
 #include <QStackedWidget>
 #include <QLabel>

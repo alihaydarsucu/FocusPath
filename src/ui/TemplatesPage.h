@@ -10,7 +10,7 @@
 #include <QPushButton>
 #include <QVector>
 #include <QHash>
-#include "workflow.h"
+#include "Workflow.h"
 #include "WorkflowCard.h"
 
 class TemplatesPage : public QWidget

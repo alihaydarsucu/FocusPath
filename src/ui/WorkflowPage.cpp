@@ -1,5 +1,5 @@
-#include "workflowpage.h"
-#include "workflow.h"
+#include "WorkflowPage.h"
+#include "Workflow.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>

@@ -1,5 +1,5 @@
-#include "workflowsetuppage.h"
-#include "emoji_selector.h"
+#include "WorkflowSetupPage.h"
+#include "EmojiSelector.h"
 
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -1032,7 +1032,7 @@ void WorkflowSetupPage::createWorkflow(int totalMinutes, bool isFavorite)
                      : Workflow(workflowName.toStdString(), totalMinutes, isFavorite);
 
     for (const QString &appName : selectedApps) {
-        w.addApps(appName.toStdString());
+        w.addApp(appName.toStdString());
     }
 
     qDebug() << "[WorkflowSetupPage] Selected apps" << selectedApps;

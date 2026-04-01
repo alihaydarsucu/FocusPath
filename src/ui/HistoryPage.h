@@ -13,7 +13,7 @@
 #include <QDate>
 #include <QtSvg/QSvgWidget>
 #include <memory>
-#include "workflow.h"
+#include "Workflow.h"
 
 class HistoryPage : public QWidget
 {

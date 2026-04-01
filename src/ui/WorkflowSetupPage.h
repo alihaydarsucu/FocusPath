@@ -1,8 +1,8 @@
 #ifndef WORKFLOWSETUPPAGE_H
 #define WORKFLOWSETUPPAGE_H
 
-#include "workflow.h"
-#include "customslider.h"
+#include "Workflow.h"
+#include "CustomSlider.h"
 #include <QWidget>
 #include <QStackedWidget>
 #include <QSlider>

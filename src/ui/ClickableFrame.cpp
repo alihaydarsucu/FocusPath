@@ -1,4 +1,4 @@
-#include "clickableframe.h"
+#include "ClickableFrame.h"
 #include <QIcon>
 #include <QPainter>
 #include <QCursor>

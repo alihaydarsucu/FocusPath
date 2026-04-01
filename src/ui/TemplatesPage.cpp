@@ -1,4 +1,4 @@
-#include "templatespage.h"
+#include "TemplatesPage.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDir>
@@ -172,7 +172,7 @@ void TemplatesPage::loadFavoriteWorkflows() {
             Workflow workflow = Workflow::loadWorkflowFromFile(fileInfo.absoluteFilePath());
             
             // Only add favorite workflows
-            if (workflow.getisFavorite()) {
+            if (workflow.getIsFavorite()) {
                 QString key = QString::fromStdString(workflow.getDate());
                 workflowFileMap.insert(key, fileInfo.absoluteFilePath());
                 allWorkflows.append(workflow);

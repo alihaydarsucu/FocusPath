@@ -1,4 +1,4 @@
-#include "emoji_selector.h"
+#include "EmojiSelector.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

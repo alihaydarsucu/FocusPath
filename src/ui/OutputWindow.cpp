@@ -1,8 +1,8 @@
-#include "outputwindow.h"
+#include "OutputWindow.h"
 
-#include "workflow.h"
-#include "efficiency_meter.hpp"
-#include "GraphicGenerator_header_and_structs.h"
+#include "Workflow.h"
+#include "EfficiencyMeter.hpp"
+#include "GraphicGeneratorStructs.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -188,8 +188,8 @@ SessionData OutputWindow::buildSessionData(const EfficiencyMeter &meter) const
     data.events.reserve(meter.events().size());
     for (const auto &ev : meter.events()) {
         AppEvent e;
-        e.appName = ev.window_class;
-        e.duration = static_cast<long>(ev.duration_ms);
+        e.appName = ev.windowClass;
+        e.duration = static_cast<long>(ev.durationMs);
         data.events.push_back(e);
     }
 
@@ -202,9 +202,9 @@ SessionData OutputWindow::buildSessionData(const EfficiencyMeter &meter) const
 
     // Attention stats
     const auto att = meter.attention();
-    data.distractionCount = att.distraction_count;
-    data.longestDistraction = att.longest_distraction_ms / 1000; // convert to seconds
-    data.longestFocus = att.longest_focus__ms / 1000; // convert to seconds
+    data.distractionCount = att.distractionCount;
+    data.longestDistraction = att.longestDistractionMs / 1000; // convert to seconds
+    data.longestFocus = att.longestFocusMs / 1000; // convert to seconds
 
     return data;
 }

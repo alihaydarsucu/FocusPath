@@ -1,4 +1,4 @@
-#include "imagecard.h"
+#include "ImageCard.h"
 #include <QVBoxLayout>
 #include <QGraphicsDropShadowEffect>
 #include <QRegion>

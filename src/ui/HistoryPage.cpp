@@ -1,4 +1,4 @@
-#include "historypage.h"
+#include "HistoryPage.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDir>

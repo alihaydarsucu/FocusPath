@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include "inputwindow.h"
-#include "outputwindow.h"
-#include "workflow.h"
+#include "InputWindow.h"
+#include "OutputWindow.h"
+#include "Workflow.h"
 #include <QMainWindow>
 #include <QStackedWidget>
-#include "system_controller.hpp"
+#include "SystemController.hpp"
 
 class InputWindow;
 class OutputWindow;
